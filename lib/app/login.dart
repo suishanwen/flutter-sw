@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../model/user.dart';
 import '../reducer/combineRecuder.dart';
 
@@ -12,7 +13,7 @@ class Login extends StatelessWidget {
         builder: (context, user) {
           var leftRightPadding = 30.0;
           var topBottomPadding = 4.0;
-          var hintTips = new TextStyle(fontSize: 15.0, color: Colors.black26);
+          var hintTips = new TextStyle(fontSize: 20.0, color: Colors.black26);
           var _userCodeController = new TextEditingController();
           _userCodeController.text = user.userCode;
           return new Scaffold(
@@ -46,7 +47,23 @@ class Login extends StatelessWidget {
                       child: new FlatButton(
                           onPressed: () {
                             if (_userCodeController.text == '') {
-                              return false;
+                              showDialog(
+                                context: context,
+                                builder: (_) => PlatformAlertDialog(
+                                  title: Text('提示'),
+                                  content: Text('用户码不能为空！'),
+                                  actions: <Widget>[
+                                    PlatformDialogAction(
+                                      child: PlatformText('确定'),
+                                      onPressed: () =>
+                                          Navigator.of(
+                                              context, rootNavigator: true).pop(
+                                              'dialog'),
+                                    )
+                                  ],
+                                ),
+                              );
+                              return;
                             }
                             print("用户码：" + _userCodeController.text);
                             user.setUserCode(_userCodeController.text);

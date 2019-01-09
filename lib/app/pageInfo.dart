@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'cardList.dart';
 
 class PageInfo extends StatefulWidget {
   final int page;
@@ -24,7 +25,7 @@ class _PageState extends State<PageInfo> {
         data = "用户：${userCode} 添加页";
         break;
       case 2:
-        data = "用户：${userCode} 卡片页";
+        return new CardList(userCode);
         break;
       case 3:
         data = "用户：${userCode} 项目页";
