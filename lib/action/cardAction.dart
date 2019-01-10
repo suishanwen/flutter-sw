@@ -67,10 +67,11 @@ ThunkAction<AppState> queryNetAction(int pk, String userCode) {
       var response = await dio.post("http://bitcoinrobot.cn:8000/queryNet/",
           data: new FormData.from({"pk": pk}));
       if (response.statusCode == 200) {
-        store.dispatch(queryCardListAction(userCode));
-      } else {
-        store.dispatch(SetLoadingAction(false));
+        new Future.delayed(const Duration(seconds: 0), () {
+          store.dispatch(queryCardListAction(userCode));
+        });
       }
+      store.dispatch(SetLoadingAction(false));
     } catch (Exception) {}
   };
 }
