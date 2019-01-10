@@ -31,6 +31,8 @@ dependencies:
   auto_size_text: ^0.3.0
   common_utils: ^1.0.9
   progress_hud: ^1.1.0
+  flip_card: ^0.2.1
+  dio: ^1.0.13
 dev_dependencies:
   flutter_test:
     sdk: flutter

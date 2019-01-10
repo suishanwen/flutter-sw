@@ -15,7 +15,7 @@ void main() {
     initialState: new AppState(
       user: new User(false, '', null),
       page: new Page(false, 0, null),
-      card: new TelCard(false, false, new List<CardInfo>(), null),
+      card: new TelCard(false, false, new List<CardInfo>(), null, null),
     ),
   );
   runApp(new MaterialApp(

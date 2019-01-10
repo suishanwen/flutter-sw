@@ -1,12 +1,11 @@
 import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 import 'package:redux/redux.dart';
-import 'dart:io';
 import '../reducer/combineRecuder.dart';
 import '../model/telCard.dart';
 
-var httpClient = new HttpClient();
+Dio dio = new Dio();
 
 class InitTelCardAction {
   final TelCard telCard;
@@ -36,12 +35,9 @@ ThunkAction<AppState> queryCardListAction(String userCode) {
     store.dispatch(SetLoadingAction(true));
     List<CardInfo> cardList = new List<CardInfo>();
     try {
-      var uri = new Uri.http(
-          'bitcoinrobot.cn:8000', '/queryData/', {'user': userCode});
-      var request = await httpClient.getUrl(uri);
-      var response = await request.close();
-      var responseBody = await response.transform(utf8.decoder).join();
-      List<dynamic> data = json.decode(responseBody);
+      var response = await dio
+          .get("http://bitcoinrobot.cn:8000/queryData/?user=${userCode}");
+      List<dynamic> data = json.decode(response.data);
       data.forEach((f) {
         cardList.add(new CardInfo.fromJson(json.decode(json.encode(f))));
       });
@@ -64,8 +60,17 @@ class DelTelCardInfo {
   DelTelCardInfo(this.pk);
 }
 
-class QueryNet {
-  final String pk;
-
-  QueryNet(this.pk);
+ThunkAction<AppState> queryNetAction(int pk, String userCode) {
+  return (Store<AppState> store) async {
+    store.dispatch(SetLoadingAction(true));
+    try {
+      var response = await dio.post("http://bitcoinrobot.cn:8000/queryNet/",
+          data: new FormData.from({"pk": pk}));
+      if (response.statusCode == 200) {
+        store.dispatch(queryCardListAction(userCode));
+      } else {
+        store.dispatch(SetLoadingAction(false));
+      }
+    } catch (Exception) {}
+  };
 }

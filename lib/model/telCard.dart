@@ -31,12 +31,18 @@ class TelCard {
   bool loading;
   List<CardInfo> cardList;
   final Function loadCardList;
+  final Function queryNet;
 
-  TelCard(this.init, this.loading, this.cardList, this.loadCardList);
+  TelCard(
+      this.init, this.loading, this.cardList, this.loadCardList, this.queryNet);
 
   factory TelCard.create(Store<AppState> store) {
-    TelCard card = TelCard(true, false, new List(),
-        (userCode) => store.dispatch(queryCardListAction(userCode)));
+    TelCard card = TelCard(
+        true,
+        false,
+        new List(),
+        (userCode) => store.dispatch(queryCardListAction(userCode)),
+        (pk, userCode) => store.dispatch(queryNetAction(pk, userCode)));
     store.dispatch(InitTelCardAction(card));
     return card;
   }

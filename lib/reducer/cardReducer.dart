@@ -9,7 +9,6 @@ final cardReducer = combineReducers<TelCard>([
   TypedReducer<TelCard, SetLoadingAction>(_loading),
   TypedReducer<TelCard, SaveTelCardInfo>(_prev),
   TypedReducer<TelCard, DelTelCardInfo>(_prev),
-  TypedReducer<TelCard, QueryNet>(_prev),
 ]);
 
 TelCard _init(TelCard prev, action) {
