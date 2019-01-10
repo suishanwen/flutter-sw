@@ -5,6 +5,7 @@ import '../action/cardAction.dart';
 final cardReducer = combineReducers<TelCard>([
   TypedReducer<TelCard, InitTelCardAction>(_init),
   TypedReducer<TelCard, LoadTelCardList>(_load),
+  TypedReducer<TelCard, SetLoadingAction>(_loading),
   TypedReducer<TelCard, SaveTelCardInfo>(_prev),
   TypedReducer<TelCard, DelTelCardInfo>(_prev),
   TypedReducer<TelCard, QueryNet>(_prev),
@@ -16,6 +17,11 @@ TelCard _init(TelCard prev, action) {
 
 TelCard _load(TelCard prev, action) {
   prev.cardList = action.cardList;
+  return prev;
+}
+
+TelCard _loading(TelCard prev, action) {
+  prev.loading = action.loading;
   return prev;
 }
 

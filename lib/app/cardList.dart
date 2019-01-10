@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:common_utils/common_utils.dart';
+import 'package:progress_hud/progress_hud.dart';
 import '../model/telCard.dart';
 import '../reducer/combineRecuder.dart';
 
@@ -15,6 +16,8 @@ class CardList extends StatefulWidget {
 }
 
 class _CardState extends State<CardList> {
+  ProgressHUD _progressHUD;
+
   List<TableRow> buildGrid(cardList) {
     List<TableRow> rows = [];
     rows.add(new TableRow(
@@ -74,6 +77,18 @@ class _CardState extends State<CardList> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _progressHUD = new ProgressHUD(
+      backgroundColor: Colors.black12,
+      color: Colors.white,
+      containerColor: Colors.blue,
+      borderRadius: 5.0,
+      text: 'Loading...',
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new StoreConnector<AppState, TelCard>(converter: (store) {
       TelCard card;
@@ -85,20 +100,34 @@ class _CardState extends State<CardList> {
       }
       return card;
     }, builder: (context, card) {
+      new Future.delayed(const Duration(seconds: 0), () {
+        if (!card.loading && _progressHUD.loading) {
+          setState(() {
+            _progressHUD.state.dismiss();
+          });
+        } else if (card.loading) {
+          setState(() {
+            _progressHUD.state.show();
+          });
+        }
+      });
       return new Scaffold(
-        body: new Table(
-            columnWidths: const <int, TableColumnWidth>{
-              0: FlexColumnWidth(40.0),
-              1: FlexColumnWidth(100.0),
-              2: FlexColumnWidth(140.0),
-              3: FlexColumnWidth(80.0),
-            },
-            border: new TableBorder.all(width: 1.0, color: Colors.grey),
-            children: buildGrid(card.cardList)),
+        body: new Stack(children: [
+          new Table(
+              columnWidths: const <int, TableColumnWidth>{
+                0: FlexColumnWidth(40.0),
+                1: FlexColumnWidth(100.0),
+                2: FlexColumnWidth(140.0),
+                3: FlexColumnWidth(80.0),
+              },
+              border: new TableBorder.all(width: 1.0, color: Colors.grey),
+              children: buildGrid(card.cardList)),
+          _progressHUD,
+        ]),
         floatingActionButton: new FloatingActionButton(
-          tooltip: '查询', // used by assistive technologies
+          tooltip: '刷新', // used by assistive technologies
           child: new Icon(Icons.refresh),
-          onPressed: (){
+          onPressed: () {
             card.loadCardList(widget.userCode);
           },
         ),

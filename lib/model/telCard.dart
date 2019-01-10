@@ -17,23 +17,25 @@ class CardInfo {
   int sort;
   DateTime update;
 
+  CardInfo(this.id, this.phone, this.encryptPassword, this.icc_id, this.user,
+      this.net, this.remark, this.sort, this.update);
 
-  CardInfo(this.id, this.phone, this.encryptPassword,
-      this.icc_id, this.user, this.net, this.remark, this.sort, this.update);
+  factory CardInfo.fromJson(Map<String, dynamic> json) =>
+      _$CardInfoFromJson(json);
 
-  factory CardInfo.fromJson(Map<String, dynamic> json) => _$CardInfoFromJson(json);
   Map<String, dynamic> toJson() => _$CardInfoToJson(this);
 }
 
 class TelCard {
   bool init;
+  bool loading;
   List<CardInfo> cardList;
   final Function loadCardList;
 
-  TelCard(this.init, this.cardList, this.loadCardList);
+  TelCard(this.init, this.loading, this.cardList, this.loadCardList);
 
   factory TelCard.create(Store<AppState> store) {
-    TelCard card = TelCard(true, new List(),
+    TelCard card = TelCard(true, false, new List(),
         (userCode) => store.dispatch(queryCardListAction(userCode)));
     store.dispatch(InitTelCardAction(card));
     return card;

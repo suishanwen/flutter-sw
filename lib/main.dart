@@ -15,7 +15,7 @@ void main() {
     initialState: new AppState(
       user: new User(false, '', null),
       page: new Page(false, 0, null),
-      card: new TelCard(false, new List<CardInfo>(), null),
+      card: new TelCard(false, false, new List<CardInfo>(), null),
     ),
   );
   runApp(new MaterialApp(title: 'NetUseMonitor', home: new ReduxApp(store)));

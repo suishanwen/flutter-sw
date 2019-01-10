@@ -20,19 +20,31 @@ class LoadTelCardList {
   LoadTelCardList(this.cardList);
 }
 
+class SetLoadingAction {
+  final bool loading;
+
+  SetLoadingAction(this.loading);
+}
+
 ThunkAction<AppState> queryCardListAction(String userCode) {
   return (Store<AppState> store) async {
+    //begin loading
+    store.dispatch(SetLoadingAction(true));
     List<CardInfo> cardList = new List<CardInfo>();
-    var uri = new Uri.http(
-        'bitcoinrobot.cn:8000', '/queryData/', {'user': userCode});
-    var request = await httpClient.getUrl(uri);
-    var response = await request.close();
-    var responseBody = await response.transform(utf8.decoder).join();
-    List<dynamic> data = json.decode(responseBody);
-    data.forEach((f){
-      cardList.add(new CardInfo.fromJson(json.decode(json.encode(f))));
-    });
+    try {
+      var uri = new Uri.http(
+          'bitcoinrobot.cn:8000', '/queryData/', {'user': userCode});
+      var request = await httpClient.getUrl(uri);
+      var response = await request.close();
+      var responseBody = await response.transform(utf8.decoder).join();
+      List<dynamic> data = json.decode(responseBody);
+      data.forEach((f) {
+        cardList.add(new CardInfo.fromJson(json.decode(json.encode(f))));
+      });
+    } catch (Exception) {}
     store.dispatch(LoadTelCardList(cardList));
+    //end loading
+    store.dispatch(SetLoadingAction(false));
   };
 }
 
