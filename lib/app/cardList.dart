@@ -85,6 +85,7 @@ class _CardState extends State<CardList> {
       containerColor: Colors.blue,
       borderRadius: 5.0,
       text: 'Loading...',
+      loading: false,
     );
   }
 
@@ -101,7 +102,7 @@ class _CardState extends State<CardList> {
       return card;
     }, builder: (context, card) {
       new Future.delayed(const Duration(seconds: 0), () {
-        if (!card.loading && _progressHUD.loading) {
+        if (!card.loading) {
           setState(() {
             _progressHUD.state.dismiss();
           });

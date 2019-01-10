@@ -14,6 +14,10 @@ class InitTelCardAction {
   InitTelCardAction(this.telCard);
 }
 
+class ResetInitAction {
+  ResetInitAction();
+}
+
 class LoadTelCardList {
   final List<CardInfo> cardList;
 
