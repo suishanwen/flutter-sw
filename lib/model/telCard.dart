@@ -7,9 +7,8 @@ part 'telCard.g.dart';
 
 @JsonSerializable()
 class CardInfo {
-  String pk;
+  int id;
   String phone;
-  String password;
   String encryptPassword;
   String icc_id;
   String user;
@@ -19,7 +18,7 @@ class CardInfo {
   DateTime update;
 
 
-  CardInfo(this.pk, this.phone, this.password, this.encryptPassword,
+  CardInfo(this.id, this.phone, this.encryptPassword,
       this.icc_id, this.user, this.net, this.remark, this.sort, this.update);
 
   factory CardInfo.fromJson(Map<String, dynamic> json) => _$CardInfoFromJson(json);

@@ -8,9 +8,8 @@ part of 'telCard.dart';
 
 CardInfo _$CardInfoFromJson(Map<String, dynamic> json) {
   return CardInfo(
-      json['pk'] as String,
+      json['id'] as int,
       json['phone'] as String,
-      json['password'] as String,
       json['encryptPassword'] as String,
       json['icc_id'] as String,
       json['user'] as String,
@@ -21,9 +20,8 @@ CardInfo _$CardInfoFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$CardInfoToJson(CardInfo instance) => <String, dynamic>{
-      'pk': instance.pk,
+      'id': instance.id,
       'phone': instance.phone,
-      'password': instance.password,
       'encryptPassword': instance.encryptPassword,
       'icc_id': instance.icc_id,
       'user': instance.user,
