@@ -18,5 +18,8 @@ void main() {
       card: new TelCard(false, false, new List<CardInfo>(), null),
     ),
   );
-  runApp(new MaterialApp(title: 'NetUseMonitor', home: new ReduxApp(store)));
+  runApp(new MaterialApp(
+      title: 'NetUseMonitor',
+      debugShowCheckedModeBanner: false,
+      home: new ReduxApp(store)));
 }
