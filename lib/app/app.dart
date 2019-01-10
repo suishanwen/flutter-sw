@@ -7,6 +7,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Navigation',
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => new Login(),
