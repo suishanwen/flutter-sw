@@ -86,15 +86,23 @@ class _CardState extends State<CardList> {
       return card;
     }, builder: (context, card) {
       return new Scaffold(
-          body: new Table(
-              columnWidths: const <int, TableColumnWidth>{
-                0: FlexColumnWidth(30.0),
-                1: FlexColumnWidth(80.0),
-                2: FlexColumnWidth(150.0),
-                3: FlexColumnWidth(80.0),
-              },
-              border: new TableBorder.all(width: 1.0, color: Colors.grey),
-              children: buildGrid(card.cardList)));
+        body: new Table(
+            columnWidths: const <int, TableColumnWidth>{
+              0: FlexColumnWidth(40.0),
+              1: FlexColumnWidth(100.0),
+              2: FlexColumnWidth(140.0),
+              3: FlexColumnWidth(80.0),
+            },
+            border: new TableBorder.all(width: 1.0, color: Colors.grey),
+            children: buildGrid(card.cardList)),
+        floatingActionButton: new FloatingActionButton(
+          tooltip: '查询', // used by assistive technologies
+          child: new Icon(Icons.refresh),
+          onPressed: (){
+            card.loadCardList(widget.userCode);
+          },
+        ),
+      );
     });
   }
 }
