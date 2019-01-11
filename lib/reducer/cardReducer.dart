@@ -4,7 +4,7 @@ import '../action/cardAction.dart';
 
 final cardReducer = combineReducers<TelCard>([
   TypedReducer<TelCard, InitTelCardAction>(_init),
-  TypedReducer<TelCard, ResetInitAction>(_reInit),
+  TypedReducer<TelCard, ResetCardInitAction>(_reInit),
   TypedReducer<TelCard, LoadTelCardList>(_load),
   TypedReducer<TelCard, SetLoadingAction>(_loading),
   TypedReducer<TelCard, SaveTelCardInfo>(_prev),

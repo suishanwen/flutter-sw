@@ -3,7 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import '../model/page.dart';
 import '../model/user.dart';
 import '../reducer/combineRecuder.dart';
-import 'pageInfo.dart';
+import 'package:sw/app/page/pageInfo.dart';
 
 class IconInfo {
   int page;

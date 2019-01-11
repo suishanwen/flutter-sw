@@ -3,6 +3,7 @@ import 'package:redux/redux.dart';
 import '../reducer/combineRecuder.dart';
 import '../action/loginAction.dart';
 import '../action/cardAction.dart';
+import '../action/onlineCtrlAction.dart';
 
 class User {
   bool init;
@@ -16,7 +17,8 @@ class User {
     User user = User(true, '', (userCode) {
       return store.dispatch(UserCodeAction(userCode));
     }, (userCode) {
-      store.dispatch(ResetInitAction());
+      store.dispatch(ResetCardInitAction());
+      store.dispatch(ResetOnlineCtrlInitAction());
       return store.dispatch(LoginAction(userCode));
     });
     store.dispatch(asyncInitUserAction(user));

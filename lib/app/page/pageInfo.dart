@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'cardList.dart';
+import 'package:sw/app/page/cardList.dart';
+import 'package:sw/app/page/onlineList.dart';
 
 class PageInfo extends StatefulWidget {
   final int page;
@@ -19,10 +20,10 @@ class _PageState extends State<PageInfo> {
     String data = "";
     switch (page) {
       case 0:
-        return new CardList(userCode);
+        return CardList(userCode);
         break;
       case 1:
-        data = "用户：${userCode} 在线";
+        return OnlineList(userCode);
         break;
       case 2:
         data = "用户：${userCode} 日志";

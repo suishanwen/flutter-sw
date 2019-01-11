@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:progress_hud/progress_hud.dart';
-import '../model/telCard.dart';
-import '../reducer/combineRecuder.dart';
+import '../../model/onlineCtrl.dart';
+import '../../reducer/combineRecuder.dart';
 
-class CardList extends StatefulWidget {
+class OnlineList extends StatefulWidget {
   final String userCode;
 
-  CardList(this.userCode);
+  OnlineList(this.userCode);
 
   @override
-  _CardState createState() => new _CardState();
+  _OnlineListState createState() => new _OnlineListState();
 }
 
-class _CardState extends State<CardList> {
+class _OnlineListState extends State<OnlineList> {
   ProgressHUD _progressHUD;
 
   @override
@@ -32,46 +32,55 @@ class _CardState extends State<CardList> {
 
   @override
   Widget build(BuildContext context) {
-    return new StoreConnector<AppState, TelCard>(converter: (store) {
-      TelCard card;
-      if (!store.state.card.init) {
-        card = TelCard.create(store);
-        card.loadCardList(widget.userCode);
+    return new StoreConnector<AppState, OnlineCtrl>(converter: (store) {
+      OnlineCtrl onlineCtrl;
+      if (!store.state.onlineCtrl.init) {
+        onlineCtrl = OnlineCtrl.create(store);
+        onlineCtrl.loadCtrlList(widget.userCode);
       } else {
-        card = store.state.card;
+        onlineCtrl = store.state.onlineCtrl;
       }
-      return card;
-    }, builder: (context, card) {
+      return onlineCtrl;
+    }, builder: (context, onlineCtrl) {
       new Future.delayed(const Duration(seconds: 0), () {
-        if (!card.loading) {
+        if (!onlineCtrl.loading) {
           setState(() {
             _progressHUD.state.dismiss();
           });
-        } else if (card.loading) {
+        } else if (onlineCtrl.loading) {
           setState(() {
             _progressHUD.state.show();
           });
         }
       });
-      List<CardInfo> cardList = card.cardList;
+      Color getColor(DateTime dateTime) {
+        return DateUtil.getNowDateMs() - dateTime.millisecondsSinceEpoch <
+                1000 * 60 * 3
+            ? Colors.green
+            : Colors.grey;
+      }
+
+      List<Controller> ctrlList = onlineCtrl.ctrlList;
       return Scaffold(
         body: new Stack(children: [
           Container(
             child: ListView.builder(
-                itemCount: cardList.length,
+                itemCount: ctrlList.length,
                 itemBuilder: (BuildContext content, int index) {
-                  CardInfo cardInfo = cardList[index];
+                  Controller ctrl = ctrlList[index];
                   return ListTile(
-                    leading:
-                        CircleAvatar(child: new Text(cardInfo.sort.toString())),
-                    title: Text("${cardInfo.phone}  ${cardInfo.remark}"),
-                    subtitle: Text(cardInfo.net),
+                    leading: CircleAvatar(
+                      child: new Text((index + 1).toString(),
+                          style: TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.white,
+                          )),
+                      backgroundColor: getColor(ctrl.update),
+                    ),
+                    title: Text(ctrl.identity),
                     trailing: new Text(TimelineUtil.formatByDateTime(
-                        cardInfo.update,
+                        ctrl.update,
                         dayFormat: DayFormat.Full)),
-                    onLongPress: () {
-                      card.queryNet(cardInfo.id, widget.userCode);
-                    },
                   );
                 }),
           ),
@@ -82,7 +91,7 @@ class _CardState extends State<CardList> {
           child: new Icon(Icons.refresh),
           backgroundColor: Colors.lightBlueAccent,
           onPressed: () {
-            card.loadCardList(widget.userCode);
+            onlineCtrl.loadCtrlList(widget.userCode);
           },
         ),
       );

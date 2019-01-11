@@ -13,8 +13,8 @@ class InitTelCardAction {
   InitTelCardAction(this.telCard);
 }
 
-class ResetInitAction {
-  ResetInitAction();
+class ResetCardInitAction {
+  ResetCardInitAction();
 }
 
 class LoadTelCardList {
