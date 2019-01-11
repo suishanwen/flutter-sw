@@ -28,8 +28,7 @@ class Login extends StatelessWidget {
                     iconTheme: new IconThemeData(color: Colors.white),
                   ),
                   preferredSize: Size.fromHeight(screenHeight * 0.05)),
-              body: new SingleChildScrollView(
-                  child: new Container(
+              body:new Container(
                       decoration: new BoxDecoration(
                         image: new DecorationImage(
                             image: new AssetImage('images/login_back.jpg'),
@@ -41,7 +40,7 @@ class Login extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           new Padding(
-                            padding: new EdgeInsets.only(top: 50),
+                            padding: new EdgeInsets.only(top: 30),
                             child: new FlutterLogo(
                               size: 80.0,
                               colors: Colors.yellow,
@@ -49,7 +48,7 @@ class Login extends StatelessWidget {
                           ),
                           new Padding(
                             padding:
-                                new EdgeInsets.fromLTRB(120, 200.0, 120, 4),
+                                new EdgeInsets.fromLTRB(120, 15.0, 120, 4),
                             child: new TextField(
                               style: hintTips,
                               controller: _userCodeController,
@@ -66,7 +65,7 @@ class Login extends StatelessWidget {
                           new Container(
                             width: 360.0,
                             margin:
-                                new EdgeInsets.fromLTRB(10.0, 40.0, 10.0, 0.0),
+                                new EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
                             padding: new EdgeInsets.fromLTRB(100, 4, 100, 4),
                             child: new Card(
                               color: Colors.green,
@@ -108,7 +107,7 @@ class Login extends StatelessWidget {
                             ),
                           )
                         ],
-                      ))));
+                      )));
         });
   }
 }
