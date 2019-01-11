@@ -66,7 +66,15 @@ class Nav extends StatelessWidget {
       return new Scaffold(
         appBar: new AppBar(
           title: new Text(getAppTitle()),
-          actions: <Widget>[],
+          actions: <Widget>[
+            new IconButton(
+              icon: new Icon(Icons.exit_to_app),
+              tooltip: '退出',
+              onPressed: () {
+                Navigator.of(context).pushReplacementNamed('/');
+              },
+            ),
+          ],
         ),
         body: new PageInfo(page.pageIndex, user.userCode),
         bottomNavigationBar: new BottomNavigationBar(

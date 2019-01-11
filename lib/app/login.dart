@@ -14,12 +14,17 @@ class Login extends StatelessWidget {
           var leftRightPadding = 30.0;
           var topBottomPadding = 4.0;
           var hintTips = new TextStyle(fontSize: 20.0, color: Colors.black26);
-          var _userCodeController = new TextEditingController();
-          _userCodeController.text = user.userCode;
+          var _userCodeController = new TextEditingController.fromValue(
+              TextEditingValue(
+                  text: user.userCode,
+                  // 保持光标在最后
+                  selection: TextSelection.fromPosition(TextPosition(
+                      affinity: TextAffinity.downstream,
+                      offset: user.userCode.length))));
           return new Scaffold(
               appBar: new AppBar(
                 title:
-                    new Text("登录", style: new TextStyle(color: Colors.white)),
+                    new Text("用户码", style: new TextStyle(color: Colors.white)),
                 iconTheme: new IconThemeData(color: Colors.white),
               ),
               body: new Column(
@@ -34,6 +39,7 @@ class Login extends StatelessWidget {
                       controller: _userCodeController,
                       decoration: new InputDecoration(hintText: "请输入用户码"),
                       obscureText: false,
+                      autofocus: true,
                     ),
                   ),
                   new Container(
@@ -50,24 +56,23 @@ class Login extends StatelessWidget {
                               showDialog(
                                 context: context,
                                 builder: (_) => PlatformAlertDialog(
-                                  title: Text('提示'),
-                                  content: Text('用户码不能为空！'),
-                                  actions: <Widget>[
-                                    PlatformDialogAction(
-                                      child: PlatformText('确定'),
-                                      onPressed: () =>
-                                          Navigator.of(
-                                              context, rootNavigator: true).pop(
-                                              'dialog'),
-                                    )
-                                  ],
-                                ),
+                                      title: Text('提示'),
+                                      content: Text('用户码不能为空！'),
+                                      actions: <Widget>[
+                                        PlatformDialogAction(
+                                          child: PlatformText('确定'),
+                                          onPressed: () => Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop('dialog'),
+                                        )
+                                      ],
+                                    ),
                               );
                               return;
                             }
                             print("用户码：" + _userCodeController.text);
                             user.setUserCode(_userCodeController.text);
-                            Navigator.of(context).pushNamed('/nav');
+                            Navigator.of(context).pushReplacementNamed('/nav');
                           },
                           child: new Padding(
                             padding: new EdgeInsets.all(10.0),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:progress_hud/progress_hud.dart';
 import '../model/telCard.dart';
@@ -65,7 +64,7 @@ class _CardState extends State<CardList> {
                   return ListTile(
                     leading:
                         CircleAvatar(child: new Text(cardInfo.sort.toString())),
-                    title: Text("${cardInfo.phone} ${cardInfo.remark}"),
+                    title: Text("${cardInfo.phone}  ${cardInfo.remark}"),
                     subtitle: Text(cardInfo.net),
                     trailing: new Text(TimelineUtil.formatByDateTime(
                         cardInfo.update,
