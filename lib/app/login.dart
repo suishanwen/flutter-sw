@@ -11,9 +11,7 @@ class Login extends StatelessWidget {
         converter: (store) =>
             store.state.user.init ? store.state.user : User.create(store),
         builder: (context, user) {
-          var leftRightPadding = 30.0;
-          var topBottomPadding = 4.0;
-          var hintTips = new TextStyle(fontSize: 20.0, color: Colors.black26);
+          var hintTips = new TextStyle(fontSize: 20.0, color: Colors.white);
           var _userCodeController = new TextEditingController.fromValue(
               TextEditingValue(
                   text: user.userCode,
@@ -24,68 +22,79 @@ class Login extends StatelessWidget {
           return new Scaffold(
               appBar: new AppBar(
                 title:
-                    new Text("用户码", style: new TextStyle(color: Colors.white)),
+                    new Text("用户登陆", style: new TextStyle(color: Colors.white)),
                 iconTheme: new IconThemeData(color: Colors.white),
               ),
-              body: new Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  new Padding(
-                    padding: new EdgeInsets.fromLTRB(leftRightPadding, 50.0,
-                        leftRightPadding, topBottomPadding),
-                    child: new TextField(
-                      style: hintTips,
-                      controller: _userCodeController,
-                      decoration: new InputDecoration(hintText: "请输入用户码"),
-                      obscureText: false,
-                      autofocus: true,
+              body: new Container(
+                  margin: new EdgeInsets.all(0),
+                  padding: new EdgeInsets.all(0),
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                      image: new AssetImage('images/login_back.jpg'),
+                      fit:BoxFit.fill
                     ),
                   ),
-                  new Container(
-                    width: 360.0,
-                    margin: new EdgeInsets.fromLTRB(10.0, 40.0, 10.0, 0.0),
-                    padding: new EdgeInsets.fromLTRB(leftRightPadding,
-                        topBottomPadding, leftRightPadding, topBottomPadding),
-                    child: new Card(
-                      color: Colors.green,
-                      elevation: 6.0,
-                      child: new FlatButton(
-                          onPressed: () {
-                            if (_userCodeController.text == '') {
-                              showDialog(
-                                context: context,
-                                builder: (_) => PlatformAlertDialog(
-                                      title: Text('提示'),
-                                      content: Text('用户码不能为空！'),
-                                      actions: <Widget>[
-                                        PlatformDialogAction(
-                                          child: PlatformText('确定'),
-                                          onPressed: () => Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pop('dialog'),
-                                        )
-                                      ],
-                                    ),
-                              );
-                              return;
-                            }
-                            print("用户码：" + _userCodeController.text);
-                            user.setUserCode(_userCodeController.text);
-                            Navigator.of(context).pushReplacementNamed('/nav');
-                          },
-                          child: new Padding(
-                            padding: new EdgeInsets.all(10.0),
-                            child: new Text(
-                              '登录',
-                              style: new TextStyle(
-                                  color: Colors.white, fontSize: 16.0),
-                            ),
-                          )),
-                    ),
-                  )
-                ],
-              ));
+                  child: new Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new Padding(
+                        padding: new EdgeInsets.fromLTRB(120, 360.0, 120, 4),
+                        child: new TextField(
+                          style: hintTips,
+                          controller: _userCodeController,
+                          decoration: new InputDecoration(
+                              hintText: "请输入用户码", hintStyle: hintTips),
+                          obscureText: false,
+                          autofocus: true,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      new Container(
+                        width: 360.0,
+                        margin: new EdgeInsets.fromLTRB(10.0, 40.0, 10.0, 0.0),
+                        padding: new EdgeInsets.fromLTRB(100, 4, 100, 4),
+                        child: new Card(
+                          color: Colors.green,
+                          elevation: 6.0,
+                          child: new FlatButton(
+                              onPressed: () {
+                                if (_userCodeController.text == '') {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => PlatformAlertDialog(
+                                          title: Text('提示'),
+                                          content: Text('用户码不能为空！'),
+                                          actions: <Widget>[
+                                            PlatformDialogAction(
+                                              child: PlatformText('确定'),
+                                              onPressed: () => Navigator.of(
+                                                      context,
+                                                      rootNavigator: true)
+                                                  .pop('dialog'),
+                                            )
+                                          ],
+                                        ),
+                                  );
+                                  return;
+                                }
+                                print("用户码：" + _userCodeController.text);
+                                user.setUserCode(_userCodeController.text);
+                                Navigator.of(context)
+                                    .pushReplacementNamed('/nav');
+                              },
+                              child: new Padding(
+                                padding: new EdgeInsets.all(10.0),
+                                child: new Text(
+                                  '登录',
+                                  style: new TextStyle(
+                                      color: Colors.white, fontSize: 16.0),
+                                ),
+                              )),
+                        ),
+                      )
+                    ],
+                  )));
         });
   }
 }
