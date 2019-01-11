@@ -4,12 +4,6 @@ import 'package:redux/redux.dart';
 import '../reducer/combineRecuder.dart';
 import '../model/user.dart';
 
-class LoginAction {
-  final String userCode;
-
-  LoginAction(this.userCode);
-}
-
 class InitUserAction {
   final User user;
 
@@ -23,4 +17,16 @@ ThunkAction<AppState> asyncInitUserAction(User user) {
     user.userCode = userCode == null ? '' : userCode;
     store.dispatch(InitUserAction(user));
   };
+}
+
+class UserCodeAction {
+  final String userCode;
+
+  UserCodeAction(this.userCode);
+}
+
+class LoginAction {
+  final String userCode;
+
+  LoginAction(this.userCode);
 }

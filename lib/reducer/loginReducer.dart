@@ -4,9 +4,16 @@ import '../action/loginAction.dart';
 import '../util/sharedPreference.dart';
 
 final loginReducer = combineReducers<User>([
-  TypedReducer<User, LoginAction>(_login),
   TypedReducer<User, InitUserAction>(_init),
+  TypedReducer<User, UserCodeAction>(_userCode),
+  TypedReducer<User, LoginAction>(_login),
 ]);
+
+
+User _userCode(User prev, action) {
+  prev.userCode = action.userCode;
+  return prev;
+}
 
 User _login(User prev, action) {
   SharedPreferenceUtil.set("userCode", action.userCode);

@@ -13,7 +13,7 @@ void main() {
     appReducer,
     middleware: [thunkMiddleware, new LoggingMiddleware.printer()],
     initialState: new AppState(
-      user: new User(false, '', null),
+      user: new User(false, '', null, null),
       page: new Page(false, 0, null),
       card: new TelCard(false, false, new List<CardInfo>(), null, null),
     ),
