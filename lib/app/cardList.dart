@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:progress_hud/progress_hud.dart';
 import '../model/telCard.dart';
@@ -77,76 +76,6 @@ class _CardState extends State<CardList> {
     return rows;
   }
 
-  List<Widget> buildContainer(cardList, queryNet) {
-    List<Widget> list = [];
-    for (var i = 0; i < cardList.length; i++) {
-      CardInfo card = cardList[i];
-      list.add(new Positioned(
-          left: 20.0 + (i % 2) * 200,
-          top: 20.0 + (i ~/ 2) * 200,
-          child: Container(
-            width: 150,
-            height: 150,
-            child: FlipCard(
-              direction: FlipDirection.HORIZONTAL, // default
-              front: Container(
-                color: Colors.teal,
-                child: Text(
-                  '序号：${card.sort}\n'
-                      '手机号：${card.phone}\n'
-                      '流量：${card.net}\n'
-                      '备注：${card.remark}\n'
-                      '更新：${TimelineUtil.formatByDateTime(card.update, dayFormat: DayFormat.Full)}',
-                  style: new TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.white,
-                      decoration: TextDecoration.none),
-                ),
-              ),
-              back: Container(
-                  color: Colors.teal,
-                  child: new Center(
-                    child: new RaisedButton(
-                      onPressed: () {
-                        queryNet(card.id, widget.userCode);
-                      },
-                      color: Colors.green,
-                      //按钮的背景颜色
-                      padding: EdgeInsets.all(10.0),
-                      //按钮距离里面内容的内边距
-                      child: new Text('查询'),
-                      textColor: Colors.white,
-                      //文字的颜色
-                      textTheme: ButtonTextTheme.normal,
-                      //按钮的主题
-                      onHighlightChanged: (bool b) {
-                        //水波纹高亮变化回调
-                      },
-                      disabledTextColor: Colors.black54,
-                      //按钮禁用时候文字的颜色
-                      disabledColor: Colors.black54,
-                      //按钮被禁用的时候显示的颜色
-                      highlightColor: Colors.yellowAccent,
-                      //点击或者toch控件高亮的时候显示在控件上面，水波纹下面的颜色
-                      splashColor: Colors.white,
-                      //水波纹的颜色
-                      colorBrightness: Brightness.light,
-                      //按钮主题高亮
-                      elevation: 10.0,
-                      //按钮下面的阴影
-                      highlightElevation: 10.0,
-                      //高亮时候的阴影
-                      disabledElevation: 10.0, //按下的时候的阴影
-//              shape:,//设置形状  LearnMaterial中有详解
-                    ),
-                  )),
-            ),
-          )));
-    }
-    list.add(_progressHUD);
-    return list;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -183,11 +112,34 @@ class _CardState extends State<CardList> {
           });
         }
       });
-      return new Scaffold(
-        body: new Stack(children: buildContainer(card.cardList, card.queryNet)),
+      List<CardInfo> cardList = card.cardList;
+      return Scaffold(
+        body: new Stack(children: [
+          Container(
+            child: ListView.builder(
+                itemCount: cardList.length,
+                itemBuilder: (BuildContext content, int index) {
+                  CardInfo cardInfo = cardList[index];
+                  return ListTile(
+                    leading:
+                        CircleAvatar(child: new Text(cardInfo.sort.toString())),
+                    title: Text("${cardInfo.phone}    ${cardInfo.remark}"),
+                    subtitle: Text(cardInfo.net),
+                    trailing: new Text(TimelineUtil.formatByDateTime(
+                        cardInfo.update,
+                        dayFormat: DayFormat.Full)),
+                    onLongPress: () {
+                      card.queryNet(cardInfo.id, widget.userCode);
+                    },
+                  );
+                }),
+          ),
+          _progressHUD,
+        ]),
         floatingActionButton: new FloatingActionButton(
           tooltip: '刷新', // used by assistive technologies
           child: new Icon(Icons.refresh),
+          backgroundColor: Colors.lightBlueAccent,
           onPressed: () {
             card.loadCardList(widget.userCode);
           },

@@ -32,6 +32,19 @@ class Nav extends StatelessWidget {
         page.setPageIndex(index);
       }
 
+      String getAppTitle() {
+        switch (page.pageIndex) {
+          case 0:
+            return "电信流量";
+          case 1:
+            return "在线机器";
+          case 2:
+            return "服务日志";
+          default:
+            return "";
+        }
+      }
+
       List<BottomNavigationBarItem> generateBottomNavigationBarItems(
           List<IconInfo> iconInfoList) {
         return iconInfoList.map((IconInfo item) {
@@ -52,6 +65,7 @@ class Nav extends StatelessWidget {
 
       return new Scaffold(
         appBar: new AppBar(
+          title: new Text(getAppTitle()),
           actions: <Widget>[],
         ),
         body: new PageInfo(page.pageIndex, user.userCode),
