@@ -7,6 +7,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Navigation',
+      theme: ThemeData(
+        primarySwatch: Colors.orange,
+      ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
