@@ -18,64 +18,6 @@ class CardList extends StatefulWidget {
 class _CardState extends State<CardList> {
   ProgressHUD _progressHUD;
 
-  List<TableRow> buildGrid(cardList) {
-    List<TableRow> rows = [];
-    rows.add(new TableRow(
-      children: <Widget>[
-        new TableCell(
-          child: new Center(
-            child: new Text('序号'),
-          ),
-        ),
-        new TableCell(
-          child: new Center(
-            child: new Text('手机号'),
-          ),
-        ),
-        new TableCell(
-          child: new Center(
-            child: new Text('流量'),
-          ),
-        ),
-        new TableCell(
-          child: new Center(
-            child: new Text('更新时间'),
-          ),
-        ),
-      ],
-    ));
-    for (var item in cardList) {
-      rows.add(new TableRow(children: <TableCell>[
-        new TableCell(
-          child: new Center(
-            child: new Text(item.sort.toString()),
-          ),
-        ),
-        new TableCell(
-          child: new Center(
-            child: new Text(item.phone),
-          ),
-        ),
-        new TableCell(
-          child: new Center(
-            child: new AutoSizeText(
-              item.net,
-              style: TextStyle(fontSize: 5.0),
-              maxLines: 10,
-            ),
-          ),
-        ),
-        new TableCell(
-          child: new Center(
-            child: new Text(TimelineUtil.formatByDateTime(item.update,
-                dayFormat: DayFormat.Full)),
-          ),
-        ),
-      ]));
-    }
-    return rows;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -123,7 +65,7 @@ class _CardState extends State<CardList> {
                   return ListTile(
                     leading:
                         CircleAvatar(child: new Text(cardInfo.sort.toString())),
-                    title: Text("${cardInfo.phone}    ${cardInfo.remark}"),
+                    title: Text("${cardInfo.phone} ${cardInfo.remark}"),
                     subtitle: Text(cardInfo.net),
                     trailing: new Text(TimelineUtil.formatByDateTime(
                         cardInfo.update,
