@@ -55,7 +55,7 @@ class Login extends StatelessWidget {
                               decoration: new InputDecoration(
                                   hintText: "请输入用户码", hintStyle: hintTips),
                               obscureText: false,
-                              autofocus: true,
+                              autofocus: false,
                               textAlign: TextAlign.center,
                               onChanged: (val) {
                                 user.setUserCode(val);
