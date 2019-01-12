@@ -78,7 +78,11 @@ class _OnlineListState extends State<OnlineList> {
                       backgroundColor: getColor(ctrl.update),
                     ),
                     title: Text(ctrl.identity),
-                    subtitle: Text(ctrl.arrDrop),
+                    subtitle:
+                        ctrl.arrDrop.isNotEmpty ? Text("掉线:${ctrl.arrDrop}",style: TextStyle(
+                          fontSize: 8.0,
+                          color: Colors.red,
+                        )) : null,
                     trailing: new Text(TimelineUtil.formatByDateTime(
                         ctrl.update,
                         dayFormat: DayFormat.Full)),
