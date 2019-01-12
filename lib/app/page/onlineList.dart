@@ -78,6 +78,7 @@ class _OnlineListState extends State<OnlineList> {
                       backgroundColor: getColor(ctrl.update),
                     ),
                     title: Text(ctrl.identity),
+                    subtitle: Text(ctrl.arrDrop),
                     trailing: new Text(TimelineUtil.formatByDateTime(
                         ctrl.update,
                         dayFormat: DayFormat.Full)),

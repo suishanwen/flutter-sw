@@ -9,9 +9,10 @@ part 'onlineCtrl.g.dart';
 class Controller {
   int id;
   String identity;
+  String arrDrop;
   DateTime update;
 
-  Controller(this.id, this.identity, this.update);
+  Controller(this.id, this.identity, this.arrDrop, this.update);
 
   factory Controller.fromJson(Map<String, dynamic> json) =>
       _$ControllerFromJson(json);

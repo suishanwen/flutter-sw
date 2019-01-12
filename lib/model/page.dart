@@ -11,7 +11,7 @@ class Page {
 
   factory Page.create(Store<AppState> store) {
     Page page =
-        Page(true, 0, (pageIndex) => store.dispatch(SetPageAction(pageIndex)));
+        Page(true, 1, (pageIndex) => store.dispatch(SetPageAction(pageIndex)));
     store.dispatch(InitPageAction(page));
     return page;
   }
