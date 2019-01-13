@@ -79,7 +79,7 @@ class _OnlineListState extends State<OnlineList> {
                     ),
                     title: Text(ctrl.identity),
                     subtitle:
-                        ctrl.arrDrop.isNotEmpty ? Text("掉线:${ctrl.arrDrop}",style: TextStyle(
+                        ctrl.arrDrop.isNotEmpty ? Text("${ctrl.arrDrop}",style: TextStyle(
                           fontSize: 8.0,
                           color: Colors.red,
                         )) : null,
