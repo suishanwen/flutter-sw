@@ -9,6 +9,11 @@ final loginReducer = combineReducers<User>([
   TypedReducer<User, LoginAction>(_login),
 ]);
 
+User _init(User prev, action) {
+  action.user.setInit(true);
+  return action.user;
+}
+
 User _userCode(User prev, action) {
   prev.userCode = action.userCode;
   return prev;
@@ -19,8 +24,4 @@ User _login(User prev, action) {
   prev.userCode = action.userCode;
   prev.autoLogin = true;
   return prev;
-}
-
-User _init(User prev, action) {
-  return action.user;
 }

@@ -4,28 +4,34 @@ import 'telCard.dart';
 import 'onlineCtrl.dart';
 
 class Base {
-  bool loading;
-  bool init;
+  bool init = false;
+  bool loading = false;
 
-  Base(this.loading, this.init);
+  Base();
+
+  void setInit(bool init) {
+    this.init = init;
+  }
+
+  void setLoading(bool loading) {
+    this.loading = loading;
+  }
 }
 
 class AppState {
-  Base base;
   User user;
   Page page;
   TelCard card;
   OnlineCtrl onlineCtrl;
 
-  AppState({this.base, this.user, this.page, this.card, this.onlineCtrl});
+  AppState({this.user, this.page, this.card, this.onlineCtrl});
 
   factory AppState.init() {
     return new AppState(
-      base: new Base(false, false),
-      user: new User(false, false, '', null, null),
-      page: new Page(false, 0, null),
-      card: new TelCard(false, false, new List<CardInfo>(), null, null),
-      onlineCtrl: new OnlineCtrl(false, false, new List<Controller>(), null),
+      user: new User('', null, null),
+      page: new Page(0, null),
+      card: new TelCard(new List<CardInfo>(), null, null),
+      onlineCtrl: new OnlineCtrl(new List<Controller>(), null),
     );
   }
 }

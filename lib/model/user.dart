@@ -5,17 +5,16 @@ import '../action/loginAction.dart';
 import '../action/cardAction.dart';
 import '../action/onlineCtrlAction.dart';
 
-class User {
-  bool init;
-  bool autoLogin;
+class User extends Base {
+  bool autoLogin = false;
   String userCode;
   final Function setUserCode;
   final Function login;
 
-  User(this.init, this.autoLogin, this.userCode, this.setUserCode, this.login);
+  User(this.userCode, this.setUserCode, this.login);
 
   factory User.create(Store<AppState> store) {
-    User user = User(true, false, '', (userCode) {
+    User user = User('', (userCode) {
       return store.dispatch(UserCodeAction(userCode));
     }, (userCode) {
       store.dispatch(ResetCardInitAction());

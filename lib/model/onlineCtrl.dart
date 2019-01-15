@@ -20,16 +20,14 @@ class Controller {
   Map<String, dynamic> toJson() => _$ControllerToJson(this);
 }
 
-class OnlineCtrl {
-  bool init;
-  bool loading;
+class OnlineCtrl extends Base {
   List<Controller> ctrlList;
   final Function loadCtrlList;
 
-  OnlineCtrl(this.init, this.loading, this.ctrlList, this.loadCtrlList);
+  OnlineCtrl(this.ctrlList, this.loadCtrlList);
 
   factory OnlineCtrl.create(Store<AppState> store) {
-    OnlineCtrl onlineCtrl = OnlineCtrl(true, false, new List(),
+    OnlineCtrl onlineCtrl = OnlineCtrl(new List(),
         (userCode) => store.dispatch(queryCtrlListAction(userCode)));
     store.dispatch(InitOnlineCtrlAction(onlineCtrl));
     return onlineCtrl;

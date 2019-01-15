@@ -81,7 +81,7 @@ class _OnlineListState extends State<OnlineList> {
                     subtitle: ctrl.arrDrop.isNotEmpty
                         ? Text("${ctrl.arrDrop}",
                             style: TextStyle(
-                              fontSize: 8.0,
+                              fontSize: 12.0,
                               color: Colors.red,
                             ))
                         : null,

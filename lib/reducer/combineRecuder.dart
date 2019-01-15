@@ -3,11 +3,9 @@ import 'loginReducer.dart';
 import 'pageReducer.dart';
 import 'cardReducer.dart';
 import 'onlineCtrlReducer.dart';
-import 'baseReducer.dart';
 
 AppState appReducer(AppState state, action) {
   return AppState(
-    base: baseReducer(state.base, action),
     user: loginReducer(state.user, action),
     page: pageReducer(state.page, action),
     card: cardReducer(state.card, action),
