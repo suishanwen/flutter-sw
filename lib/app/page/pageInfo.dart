@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sw/app/page/cardList.dart';
 import 'package:sw/app/page/onlineList.dart';
+import 'package:sw/app/page/log.dart';
 
 class PageInfo extends StatefulWidget {
   final int page;
@@ -26,7 +27,7 @@ class _PageState extends State<PageInfo> {
         return OnlineList(userCode);
         break;
       case 2:
-        data = "用户：${userCode} 日志";
+        return Log();
         break;
     }
     return new Text(data);
