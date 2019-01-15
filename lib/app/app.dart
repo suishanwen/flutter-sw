@@ -8,7 +8,7 @@ class App extends StatelessWidget {
     return new MaterialApp(
       title: 'Navigation',
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primaryColor:Colors.white
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',

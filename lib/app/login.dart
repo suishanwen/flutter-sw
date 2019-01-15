@@ -41,7 +41,7 @@ class Login extends StatelessWidget {
               login();
             });
           }
-          var hintTips = new TextStyle(fontSize: 20.0, color: Colors.white);
+          var hintTips = new TextStyle(fontSize: 20.0, color: Colors.black);
           var _userCodeController = new TextEditingController.fromValue(
               TextEditingValue(
                   text: user.userCode,
@@ -53,7 +53,7 @@ class Login extends StatelessWidget {
               appBar: PreferredSize(
                   child: new AppBar(
                     title: new Text("用户登陆",
-                        style: new TextStyle(color: Colors.white)),
+                        style: new TextStyle(color: Colors.black)),
                     iconTheme: new IconThemeData(color: Colors.white),
                   ),
                   preferredSize: Size.fromHeight(screenHeight * 0.05)),
@@ -83,7 +83,6 @@ class Login extends StatelessWidget {
                           decoration: new InputDecoration(
                               hintText: "请输入用户码", hintStyle: hintTips),
                           obscureText: false,
-                          autofocus: false,
                           textAlign: TextAlign.center,
                           onChanged: (val) {
                             user.setUserCode(val);
@@ -91,26 +90,25 @@ class Login extends StatelessWidget {
                         ),
                       ),
                       new Container(
-                        width: 360.0,
-                        margin: new EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
-                        padding: new EdgeInsets.fromLTRB(100, 4, 100, 4),
-                        child: new Card(
-                          color: Colors.green,
-                          elevation: 6.0,
+                          width: 360.0,
+                          margin:
+                              new EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 0.0),
+                          padding: new EdgeInsets.fromLTRB(100, 4, 100, 4),
                           child: new FlatButton(
+                              padding: new EdgeInsets.all(20),
+                              shape: CircleBorder(
+                                  side: BorderSide(
+                                      color: Colors.grey,
+                                      style: BorderStyle.solid,
+                                      width: 1)),
                               onPressed: () {
                                 login();
                               },
-                              child: new Padding(
-                                padding: new EdgeInsets.all(10.0),
-                                child: new Text(
-                                  '登录',
-                                  style: new TextStyle(
-                                      color: Colors.white, fontSize: 16.0),
-                                ),
-                              )),
-                        ),
-                      )
+                              child: new Text(
+                                '登录',
+                                style: new TextStyle(
+                                    color: Colors.grey, fontSize: 18.0),
+                              ))),
                     ],
                   )));
         });

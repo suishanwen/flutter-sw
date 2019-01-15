@@ -13,6 +13,12 @@ class IconInfo {
   IconInfo(this.page, this.title, this.icon);
 }
 
+var barItems = [
+  new IconInfo(0, "卡片", Icons.sim_card),
+  new IconInfo(1, "在线", Icons.cloud_circle),
+  new IconInfo(2, "日志", Icons.description),
+];
+
 class Nav extends StatelessWidget {
   Widget build(BuildContext context) {
     return new StoreConnector<AppState, AppState>(converter: (store) {
@@ -25,7 +31,7 @@ class Nav extends StatelessWidget {
       User user = appState.user;
 
       Color getColor(index) {
-        return page.pageIndex == index ? Colors.orange : Colors.grey;
+        return page.pageIndex == index ? Colors.black : Colors.grey;
       }
 
       void setPageIndex(index) {
@@ -63,6 +69,13 @@ class Nav extends StatelessWidget {
         }).toList();
       }
 
+      Future<Null> _onRefresh() async {
+        print('refresh');
+        await Future.delayed(Duration(seconds: 3), () {
+          print('refresh');
+        });
+      }
+
       return new Scaffold(
         appBar: new AppBar(
           title: new Text(getAppTitle()),
@@ -76,13 +89,11 @@ class Nav extends StatelessWidget {
             ),
           ],
         ),
-        body: new PageInfo(page.pageIndex, user.userCode),
+        body: RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: new PageInfo(page.pageIndex, user.userCode)),
         bottomNavigationBar: new BottomNavigationBar(
-          items: generateBottomNavigationBarItems([
-            new IconInfo(0, "卡片", Icons.sim_card),
-            new IconInfo(1, "在线", Icons.cloud_circle),
-            new IconInfo(2, "日志", Icons.description),
-          ]),
+          items: generateBottomNavigationBarItems(barItems),
           onTap: setPageIndex,
         ),
       );

@@ -80,7 +80,7 @@ class _CardState extends State<CardList> {
         floatingActionButton: new FloatingActionButton(
           tooltip: '刷新', // used by assistive technologies
           child: new Icon(Icons.refresh),
-          backgroundColor: Colors.lightBlueAccent,
+          backgroundColor: Colors.grey,
           onPressed: () {
             card.loadCardList(widget.userCode);
           },

@@ -96,7 +96,7 @@ class _OnlineListState extends State<OnlineList> {
         floatingActionButton: new FloatingActionButton(
           tooltip: '刷新', // used by assistive technologies
           child: new Icon(Icons.refresh),
-          backgroundColor: Colors.lightBlueAccent,
+          backgroundColor: Colors.grey,
           onPressed: () {
             onlineCtrl.loadCtrlList(widget.userCode);
           },
