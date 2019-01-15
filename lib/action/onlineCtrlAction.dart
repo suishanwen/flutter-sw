@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 import 'package:redux/redux.dart';
-import '../reducer/combineRecuder.dart';
+import '../model/appState.dart';
 import '../model/onlineCtrl.dart';
 
 Dio dio = new Dio();

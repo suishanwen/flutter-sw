@@ -1,23 +1,13 @@
-import '../model/user.dart';
-import '../model/page.dart';
-import '../model/telCard.dart';
-import '../model/onlineCtrl.dart';
+import '../model/appState.dart';
 import 'loginReducer.dart';
 import 'pageReducer.dart';
 import 'cardReducer.dart';
 import 'onlineCtrlReducer.dart';
-
-class AppState {
-  User user;
-  Page page;
-  TelCard card;
-  OnlineCtrl onlineCtrl;
-
-  AppState({this.user, this.page, this.card, this.onlineCtrl});
-}
+import 'baseReducer.dart';
 
 AppState appReducer(AppState state, action) {
   return AppState(
+    base: baseReducer(state.base, action),
     user: loginReducer(state.user, action),
     page: pageReducer(state.page, action),
     card: cardReducer(state.card, action),

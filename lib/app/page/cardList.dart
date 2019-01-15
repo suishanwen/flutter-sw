@@ -3,7 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:progress_hud/progress_hud.dart';
 import '../../model/telCard.dart';
-import '../../reducer/combineRecuder.dart';
+import '../../model/appState.dart';
 
 class CardList extends StatefulWidget {
   final String userCode;

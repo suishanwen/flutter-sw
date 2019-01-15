@@ -1,5 +1,5 @@
 import 'package:redux/redux.dart';
-import '../reducer/combineRecuder.dart';
+import '../model/appState.dart';
 import '../action/navAction.dart';
 
 class Page {

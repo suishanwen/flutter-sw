@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import '../model/page.dart';
 import '../model/user.dart';
-import '../reducer/combineRecuder.dart';
+import '../model/appState.dart';
 import 'package:sw/app/page/pageInfo.dart';
 
 class IconInfo {

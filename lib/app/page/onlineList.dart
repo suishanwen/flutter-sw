@@ -3,7 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:progress_hud/progress_hud.dart';
 import '../../model/onlineCtrl.dart';
-import '../../reducer/combineRecuder.dart';
+import '../../model/appState.dart';
 
 class OnlineList extends StatefulWidget {
   final String userCode;
@@ -78,11 +78,13 @@ class _OnlineListState extends State<OnlineList> {
                       backgroundColor: getColor(ctrl.update),
                     ),
                     title: Text(ctrl.identity),
-                    subtitle:
-                        ctrl.arrDrop.isNotEmpty ? Text("${ctrl.arrDrop}",style: TextStyle(
-                          fontSize: 8.0,
-                          color: Colors.red,
-                        )) : null,
+                    subtitle: ctrl.arrDrop.isNotEmpty
+                        ? Text("${ctrl.arrDrop}",
+                            style: TextStyle(
+                              fontSize: 8.0,
+                              color: Colors.red,
+                            ))
+                        : null,
                     trailing: new Text(TimelineUtil.formatByDateTime(
                         ctrl.update,
                         dayFormat: DayFormat.Full)),

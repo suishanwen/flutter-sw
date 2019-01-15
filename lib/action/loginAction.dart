@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 import 'package:redux/redux.dart';
-import '../reducer/combineRecuder.dart';
+import '../model/appState.dart';
 import '../model/user.dart';
 
 class InitUserAction {
@@ -14,6 +14,9 @@ ThunkAction<AppState> asyncInitUserAction(User user) {
   return (Store<AppState> store) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userCode = prefs.getString("userCode");
+    if (userCode == null) {
+      user.autoLogin = true;
+    }
     user.userCode = userCode == null ? '' : userCode;
     store.dispatch(InitUserAction(user));
   };

@@ -9,7 +9,6 @@ final loginReducer = combineReducers<User>([
   TypedReducer<User, LoginAction>(_login),
 ]);
 
-
 User _userCode(User prev, action) {
   prev.userCode = action.userCode;
   return prev;
@@ -18,6 +17,7 @@ User _userCode(User prev, action) {
 User _login(User prev, action) {
   SharedPreferenceUtil.set("userCode", action.userCode);
   prev.userCode = action.userCode;
+  prev.autoLogin = true;
   return prev;
 }
 

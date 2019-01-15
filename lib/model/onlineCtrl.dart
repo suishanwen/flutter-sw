@@ -1,7 +1,7 @@
 import 'package:redux/redux.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '../reducer/combineRecuder.dart';
 import '../action/onlineCtrlAction.dart';
+import '../model/appState.dart';
 
 part 'onlineCtrl.g.dart';
 
