@@ -7,4 +7,4 @@ A new Flutter application by suishanwen@icloud.com.
 flutter packages pub run build_runner build
 
 
-(https://bitcoinrobot.cn/file/img/login.jpeg) 
+(http://bitcoinrobot.cn/file/img/login.jpeg) 
