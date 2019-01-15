@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:outline_material_icons/outline_material_icons.dart';
 import '../model/page.dart';
 import '../model/user.dart';
 import '../model/appState.dart';
@@ -9,14 +10,15 @@ class IconInfo {
   int page;
   String title;
   IconData icon;
+  IconData activeIcon;
 
-  IconInfo(this.page, this.title, this.icon);
+  IconInfo(this.page, this.title, this.icon, this.activeIcon);
 }
 
 var barItems = [
-  new IconInfo(0, "卡片", Icons.sim_card),
-  new IconInfo(1, "在线", Icons.cloud_circle),
-  new IconInfo(2, "日志", Icons.description),
+  new IconInfo(0, "卡片", OMIcons.simCard, Icons.sim_card),
+  new IconInfo(1, "在线", OMIcons.cloudCircle, Icons.cloud_circle),
+  new IconInfo(2, "日志", OMIcons.description, Icons.description),
 ];
 
 class Nav extends StatelessWidget {
@@ -30,9 +32,9 @@ class Nav extends StatelessWidget {
       Page page = appState.page;
       User user = appState.user;
 
-      Color getColor(index) {
-        return page.pageIndex == index ? Colors.black : Colors.grey;
-      }
+//      Color getColor(index) {
+//        return page.pageIndex == index ? Colors.green : Colors.black87;
+//      }
 
       void setPageIndex(index) {
         page.setPageIndex(index);
@@ -55,15 +57,21 @@ class Nav extends StatelessWidget {
           List<IconInfo> iconInfoList) {
         return iconInfoList.map((IconInfo item) {
           return BottomNavigationBarItem(
+            backgroundColor: Colors.white10,
             icon: Icon(
               item.icon,
-              color: getColor(item.page),
+              color: Colors.black87,
+              size: 30,
+            ),
+            activeIcon: Icon(
+              item.activeIcon,
+              color: Colors.black87,
               size: 30,
             ),
             title: Text(item.title,
                 style: TextStyle(
                     fontSize: 15.0,
-                    color: getColor(item.page),
+                    color: Colors.black87,
                     decoration: TextDecoration.none)),
           );
         }).toList();
@@ -95,6 +103,7 @@ class Nav extends StatelessWidget {
         bottomNavigationBar: new BottomNavigationBar(
           items: generateBottomNavigationBarItems(barItems),
           onTap: setPageIndex,
+          currentIndex: page.pageIndex,
         ),
       );
     });
