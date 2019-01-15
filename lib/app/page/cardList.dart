@@ -64,11 +64,19 @@ class _CardState extends State<CardList> {
                   return ListTile(
                     leading:
                         CircleAvatar(child: new Text(cardInfo.sort.toString())),
-                    title: Text("${cardInfo.phone}  ${cardInfo.remark}"),
-                    subtitle: Text(cardInfo.net),
-                    trailing: new Text(TimelineUtil.formatByDateTime(
-                        cardInfo.update,
-                        dayFormat: DayFormat.Full)),
+                    title: Text("${cardInfo.remark}",
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w400,
+                        )),
+                    subtitle: Text(cardInfo.net,style: TextStyle(
+                      fontSize: 15.0,
+                    )),
+                    trailing: new Text(
+                        "${cardInfo.phone}\n${TimelineUtil.formatByDateTime(cardInfo.update, dayFormat: DayFormat.Common)}",
+                        style:
+                            TextStyle(fontSize: 10.0, color: Colors.black87)),
                     onLongPress: () {
                       card.queryNet(cardInfo.id, widget.userCode);
                     },

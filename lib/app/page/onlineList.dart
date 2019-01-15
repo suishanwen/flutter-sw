@@ -87,7 +87,7 @@ class _OnlineListState extends State<OnlineList> {
                         : null,
                     trailing: new Text(TimelineUtil.formatByDateTime(
                         ctrl.update,
-                        dayFormat: DayFormat.Full)),
+                        dayFormat: DayFormat.Common)),
                   );
                 }),
           ),
