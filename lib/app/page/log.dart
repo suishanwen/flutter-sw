@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Log extends StatefulWidget {
-  WebSocketChannel channel;
+  final bool filterNet;
+  final WebSocketChannel channel =
+      new IOWebSocketChannel.connect('ws://bitcoinrobot.cn:9090/');
   String logs;
+
+  Log(this.filterNet);
 
   @override
   _LogPage createState() => new _LogPage();
@@ -13,8 +17,6 @@ class Log extends StatefulWidget {
 class _LogPage extends State<Log> {
   @override
   Widget build(BuildContext context) {
-    widget.channel =
-        new IOWebSocketChannel.connect('ws://bitcoinrobot.cn:9090/');
     widget.logs = "";
     return new Scaffold(
       body: new SingleChildScrollView(
@@ -24,7 +26,11 @@ class _LogPage extends State<Log> {
                 stream: widget.channel.stream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    widget.logs = "${snapshot.data}\n\n${widget.logs}";
+                    if (!widget.filterNet ||
+                        (widget.filterNet &&
+                            snapshot.data.toString().contains("[tel]"))) {
+                      widget.logs = "${snapshot.data}\n\n${widget.logs}";
+                    }
                   }
                   return new Text(widget.logs);
                 },

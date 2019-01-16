@@ -4,6 +4,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:progress_hud/progress_hud.dart';
 import '../../model/telCard.dart';
 import '../../model/appState.dart';
+import 'log.dart';
 
 class CardList extends StatefulWidget {
   final String userCode;
@@ -42,17 +43,29 @@ class _CardState extends State<CardList> {
       }
       return card;
     }, builder: (context, card) {
-      new Future.delayed(const Duration(seconds: 0), () {
-        if (!card.loading) {
-          setState(() {
-            _progressHUD.state.dismiss();
-          });
-        } else if (card.loading) {
-          setState(() {
-            _progressHUD.state.show();
-          });
+      Widget dynamicWidget() {
+        if (card.logging) {
+          return new AlertDialog(
+            title: new Text("查询"),
+            content: new Log(true),
+          );
+        } else {
+          return _progressHUD;
         }
-      });
+      }
+      if (!card.logging) {
+        new Future.delayed(const Duration(seconds: 0), () {
+          if (!card.loading) {
+            setState(() {
+              _progressHUD.state.dismiss();
+            });
+          } else if (card.loading) {
+            setState(() {
+              _progressHUD.state.show();
+            });
+          }
+        });
+      }
       List<CardInfo> cardList = card.cardList;
       return Scaffold(
         body: new Stack(children: [
@@ -70,9 +83,10 @@ class _CardState extends State<CardList> {
                           color: Colors.black87,
                           fontWeight: FontWeight.w400,
                         )),
-                    subtitle: Text(cardInfo.net,style: TextStyle(
-                      fontSize: 15.0,
-                    )),
+                    subtitle: Text(cardInfo.net,
+                        style: TextStyle(
+                          fontSize: 15.0,
+                        )),
                     trailing: new Text(
                         "${cardInfo.phone}\n${TimelineUtil.formatByDateTime(cardInfo.update, dayFormat: DayFormat.Common)}",
                         style:
@@ -83,13 +97,16 @@ class _CardState extends State<CardList> {
                   );
                 }),
           ),
-          _progressHUD,
+          dynamicWidget()
         ]),
         floatingActionButton: new FloatingActionButton(
           tooltip: '刷新', // used by assistive technologies
-          child: new Icon(Icons.refresh),
+          child: new Icon(card.logging ? Icons.do_not_disturb : Icons.refresh),
           backgroundColor: Colors.grey,
           onPressed: () {
+            if (card.logging) {
+              return;
+            }
             card.loadCardList(widget.userCode);
           },
         ),

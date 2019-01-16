@@ -6,6 +6,7 @@ final cardReducer = combineReducers<TelCard>([
   TypedReducer<TelCard, InitTelCardAction>(_init),
   TypedReducer<TelCard, ResetCardInitAction>(_reInit),
   TypedReducer<TelCard, SetLoadingAction>(_loading),
+  TypedReducer<TelCard, SetLoggingAction>(_logging),
   TypedReducer<TelCard, LoadTelCardList>(_load),
   TypedReducer<TelCard, SaveTelCardInfo>(_prev),
   TypedReducer<TelCard, DelTelCardInfo>(_prev),
@@ -23,6 +24,11 @@ TelCard _reInit(TelCard prev, action) {
 
 TelCard _loading(TelCard prev, action) {
   prev.loading = action.loading;
+  return prev;
+}
+
+TelCard _logging(TelCard prev, action) {
+  prev.logging = action.logging;
   return prev;
 }
 

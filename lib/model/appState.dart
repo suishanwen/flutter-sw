@@ -30,7 +30,7 @@ class AppState {
     return new AppState(
       user: new User('', null, null),
       page: new Page(0, null),
-      card: new TelCard(new List<CardInfo>(), null, null),
+      card: new TelCard(new List<CardInfo>(), null, null, false),
       onlineCtrl: new OnlineCtrl(new List<Controller>(), null),
     );
   }

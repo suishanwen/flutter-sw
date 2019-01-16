@@ -22,7 +22,11 @@ class LoadTelCardList {
 
   LoadTelCardList(this.cardList);
 }
+class SetLoggingAction {
+  final bool logging;
 
+  SetLoggingAction(this.logging);
+}
 class SetLoadingAction {
   final bool loading;
 
@@ -62,7 +66,7 @@ class DelTelCardInfo {
 
 ThunkAction<AppState> queryNetAction(int pk, String userCode) {
   return (Store<AppState> store) async {
-    store.dispatch(SetLoadingAction(true));
+    store.dispatch(SetLoggingAction(true));
     try {
       var response = await dio.post("http://bitcoinrobot.cn:8000/queryNet/",
           data: new FormData.from({"pk": pk}));
@@ -71,7 +75,7 @@ ThunkAction<AppState> queryNetAction(int pk, String userCode) {
           store.dispatch(queryCardListAction(userCode));
         });
       }
-      store.dispatch(SetLoadingAction(false));
+      store.dispatch(SetLoggingAction(false));
     } catch (Exception) {}
   };
 }
