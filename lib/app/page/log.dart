@@ -26,10 +26,12 @@ class _LogPage extends State<Log> {
                 stream: widget.channel.stream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if (!widget.filterNet ||
-                        (widget.filterNet &&
-                            snapshot.data.toString().contains("[tel]"))) {
-                      widget.logs = "${snapshot.data}\n\n${widget.logs}";
+                    var data = snapshot.data.toString();
+                    if (!widget.filterNet) {
+                      widget.logs = "${data}\n\n${widget.logs}";
+                    } else if (widget.filterNet && data.contains("[Tel]")) {
+                      widget.logs =
+                          "${data.replaceFirst("[Tel]", "")}\n\n${widget.logs}";
                     }
                   }
                   return new Text(widget.logs);
