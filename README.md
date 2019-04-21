@@ -1,3 +1,6 @@
+[![HitCount](http://hits.dwyl.io/suishanwen/flutter-sw.svg)](http://hits.dwyl.io/suishanwen/flutter-sw)
+
+
 # sw
 
 A new Flutter application by suishanwen@icloud.com.
