@@ -35,9 +35,8 @@ class _AnimationApp extends State<DlProgress>
           });
           controller.forward(from: 0.0);
         }
-//        setState(() {
-//          print(tween.value);   //打印补间插值
-//        });
+        setState(() {
+        });
       });
     controller.forward(); //执行动画
   }

@@ -2,10 +2,13 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
 class Heart extends StatefulWidget {
+  _AnimationApp heartState = new _AnimationApp();
 
-  _AnimationApp createState() => new _AnimationApp();
+  _AnimationApp createState() => heartState;
 
-  Heart();
+  void beat() {
+    heartState.heartBeat();
+  }
 }
 
 class _AnimationApp extends State<Heart> with SingleTickerProviderStateMixin {
@@ -22,10 +25,11 @@ class _AnimationApp extends State<Heart> with SingleTickerProviderStateMixin {
 
     /*创建补间对象*/
     tween = new Tween(begin: 0.0, end: 1.0).animate(controller) //返回Animation对象
-      ..addListener(() {});
+      ..addListener(() {
+        setState(() {});
+      });
 
     controller.forward(); //执行动画
-
   }
 
   Widget build(BuildContext context) {
@@ -43,6 +47,12 @@ class _AnimationApp extends State<Heart> with SingleTickerProviderStateMixin {
   startAnimtaion() {
     setState(() {
       controller.forward(from: 0.0);
+    });
+  }
+
+  heartBeat() {
+    new Future.delayed(const Duration(seconds: 0), () {
+      startAnimtaion();
     });
   }
 

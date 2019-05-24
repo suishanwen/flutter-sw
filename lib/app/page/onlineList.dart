@@ -9,31 +9,17 @@ import '../../model/appState.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class OnlineList extends StatefulWidget {
+class OnlineList extends StatelessWidget {
   final String userCode;
-  Map<String, WebSocketChannel> channelMap =
-      new Map<String, WebSocketChannel>();
+
   OnlineList(this.userCode);
 
-  @override
-  _OnlineListState createState() => new _OnlineListState();
-}
+  Map<String, WebSocketChannel> channelMap =
+      new Map<String, WebSocketChannel>();
 
-class _OnlineListState extends State<OnlineList> {
-  ProgressHUD _progressHUD;
+  Map<String, Heart> heartMap =
+  new Map<String, Heart>();
 
-  @override
-  void initState() {
-    super.initState();
-    _progressHUD = new ProgressHUD(
-      backgroundColor: Colors.black12,
-      color: Colors.white,
-      containerColor: Colors.blue,
-      borderRadius: 5.0,
-      text: 'Loading...',
-      loading: false,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,36 +27,19 @@ class _OnlineListState extends State<OnlineList> {
       OnlineCtrl onlineCtrl;
       if (!store.state.onlineCtrl.init) {
         onlineCtrl = OnlineCtrl.create(store);
-        onlineCtrl.loadCtrlList(widget.userCode);
+        onlineCtrl.loadCtrlList(userCode);
       } else {
         onlineCtrl = store.state.onlineCtrl;
       }
       return onlineCtrl;
     }, builder: (context, onlineCtrl) {
-      new Future.delayed(const Duration(seconds: 0), () {
-        if (!onlineCtrl.loading) {
-          setState(() {
-            _progressHUD.state.dismiss();
-          });
-        } else if (onlineCtrl.loading) {
-          setState(() {
-            _progressHUD.state.show();
-          });
-        }
-      });
-      Color getColor(DateTime dateTime) {
-        return DateUtil.getNowDateMs() - dateTime.millisecondsSinceEpoch <
-                1000 * 60 * 3
-            ? Colors.green
-            : Colors.grey;
-      }
-
       List<Controller> ctrlList = onlineCtrl.ctrlList;
       ctrlList.forEach((f) {
-        widget.channelMap.putIfAbsent(
+        channelMap.putIfAbsent(
             "${f.identity}_mobi",
             () => new IOWebSocketChannel.connect(
                 'ws://bitcoinrobot.cn:8051/sw/api/websocket/${f.identity}_mobi'));
+        heartMap.putIfAbsent("${f.identity}_mobi", () => new Heart());
       });
       return Scaffold(
         body: new Stack(children: [
@@ -79,8 +48,9 @@ class _OnlineListState extends State<OnlineList> {
                 itemCount: ctrlList.length,
                 itemBuilder: (BuildContext content, int index) {
                   Controller ctrl = ctrlList[index];
+                  Heart heart = heartMap["${ctrl.identity}_mobi"];
                   WebSocketChannel channel =
-                      widget.channelMap["${ctrl.identity}_mobi"];
+                      channelMap["${ctrl.identity}_mobi"];
                   return Card(
                     clipBehavior: Clip.antiAlias,
                     // 根据设置裁剪内容
@@ -141,6 +111,7 @@ class _OnlineListState extends State<OnlineList> {
                                     map.putIfAbsent(arr[0],
                                         () => arr.length == 2 ? arr[1] : "");
                                   });
+                                  heart.beat();
                                 }
                                 return Column(
                                     crossAxisAlignment:
@@ -176,8 +147,7 @@ class _OnlineListState extends State<OnlineList> {
                           child: ButtonBar(
                             children: <Widget>[
                               FlatButton(
-                                key: Key(ctrl.identity),
-                                child: new Heart(),
+                                child: heart,
                                 onPressed: () {},
                               ),
                               FlatButton(
@@ -199,14 +169,13 @@ class _OnlineListState extends State<OnlineList> {
                   );
                 }),
           ),
-          _progressHUD,
         ]),
         floatingActionButton: new FloatingActionButton(
           tooltip: '刷新', // used by assistive technologies
           child: new Icon(Icons.refresh),
           backgroundColor: Colors.grey,
           onPressed: () {
-            onlineCtrl.loadCtrlList(widget.userCode);
+            onlineCtrl.loadCtrlList(userCode);
           },
         ),
       );
@@ -215,10 +184,9 @@ class _OnlineListState extends State<OnlineList> {
 
   @override
   void dispose() {
-    widget.channelMap.forEach((key, channel) {
+    channelMap.forEach((key, channel) {
       print("channer ${key} close");
       channel.sink.close();
     });
-    super.dispose();
   }
 }
