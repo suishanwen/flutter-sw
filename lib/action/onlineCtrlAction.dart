@@ -35,16 +35,24 @@ ThunkAction<AppState> queryCtrlListAction(String userCode) {
     store.dispatch(SetLoadingAction(true));
     List<Controller> ctrlList = new List<Controller>();
     try {
-      var response = await dio.post(
-          "http://bitcoinrobot.cn:8000/listOnlineData/",
-          data: new FormData.from({"user": userCode}));
+      var response = await dio
+          .post("https://bitcoinrobot.cn/api/vote/queryList", data: userCode);
       if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.data);
+        List<dynamic> data = response.data;
         data.forEach((f) {
-          ctrlList.add(new Controller.fromJson(json.decode(json.encode(f))));
+          Controller ctrl = new Controller.fromJson(json.decode(json.encode(f)));
+          dio.post(
+              "https://bitcoinrobot.cn/api/mq/send/ctrl",
+              data: {
+                "code": "REPORT_STATE",
+                "identity": ctrl.identity
+              });
+          ctrlList.add(ctrl);
         });
       }
-    } catch (Exception ) {}
+    } catch (e) {
+      print("queryList Error:" + e);
+    }
     store.dispatch(LoadOnlineCtrlList(ctrlList));
     //end loading
     store.dispatch(SetLoadingAction(false));

@@ -5,7 +5,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class Log extends StatefulWidget {
   final bool filterNet;
   final WebSocketChannel channel =
-      new IOWebSocketChannel.connect('ws://bitcoinrobot.cn:9090/');
+      new IOWebSocketChannel.connect('wss://socket.bitcoinrobot.cn/1');
   String logs;
 
   Log(this.filterNet);

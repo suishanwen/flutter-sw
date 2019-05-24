@@ -7,12 +7,17 @@ part 'onlineCtrl.g.dart';
 
 @JsonSerializable()
 class Controller {
-  int id;
   String identity;
-  String arrDrop;
-  DateTime update;
+  String uname;
+  int startNum;
+  int endNum;
+  String workerId;
+  int tail;
+  int autoVote;
+  String user;
+  int sort;
 
-  Controller(this.id, this.identity, this.arrDrop, this.update);
+  Controller();
 
   factory Controller.fromJson(Map<String, dynamic> json) =>
       _$ControllerFromJson(json);
