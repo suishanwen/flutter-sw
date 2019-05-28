@@ -27,7 +27,7 @@ class _PageState extends State<PageInfo> {
         return OnlineList(userCode);
         break;
       case 2:
-        return Log(false);
+        return Log("3");
         break;
     }
     return new Text(data);

@@ -29,7 +29,7 @@ class _AnimationApp extends State<Heart> with SingleTickerProviderStateMixin {
         setState(() {});
       });
 
-    controller.forward(); //执行动画
+//    controller.forward(); //执行动画
   }
 
   Widget build(BuildContext context) {

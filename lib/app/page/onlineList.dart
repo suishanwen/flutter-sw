@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:common_utils/common_utils.dart';
-import 'package:progress_hud/progress_hud.dart';
 import 'package:sw/app/animate/heart.dart';
 import 'package:sw/app/animate/progress.dart';
 import '../../model/onlineCtrl.dart';
@@ -9,17 +7,20 @@ import '../../model/appState.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class OnlineList extends StatelessWidget {
+class OnlineList extends StatefulWidget {
   final String userCode;
 
   OnlineList(this.userCode);
 
+  @override
+  _OnlineListState createState() => new _OnlineListState();
+}
+
+class _OnlineListState extends State<OnlineList> {
   Map<String, WebSocketChannel> channelMap =
       new Map<String, WebSocketChannel>();
 
-  Map<String, Heart> heartMap =
-  new Map<String, Heart>();
-
+  Map<String, Heart> heartMap = new Map<String, Heart>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class OnlineList extends StatelessWidget {
       OnlineCtrl onlineCtrl;
       if (!store.state.onlineCtrl.init) {
         onlineCtrl = OnlineCtrl.create(store);
-        onlineCtrl.loadCtrlList(userCode);
+        onlineCtrl.loadCtrlList(widget.userCode);
       } else {
         onlineCtrl = store.state.onlineCtrl;
       }
@@ -175,7 +176,7 @@ class OnlineList extends StatelessWidget {
           child: new Icon(Icons.refresh),
           backgroundColor: Colors.grey,
           onPressed: () {
-            onlineCtrl.loadCtrlList(userCode);
+            onlineCtrl.loadCtrlList(widget.userCode);
           },
         ),
       );
@@ -188,5 +189,6 @@ class OnlineList extends StatelessWidget {
       print("channer ${key} close");
       channel.sink.close();
     });
+    super.dispose();
   }
 }

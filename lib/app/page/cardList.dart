@@ -47,25 +47,13 @@ class _CardState extends State<CardList> {
         if (card.logging) {
           return new AlertDialog(
             title: new Text("查询"),
-            content: new Log(true),
+            content: new Log("1"),
           );
         } else {
           return _progressHUD;
         }
       }
-      if (!card.logging) {
-        new Future.delayed(const Duration(seconds: 0), () {
-          if (!card.loading) {
-            setState(() {
-              _progressHUD.state.dismiss();
-            });
-          } else if (card.loading) {
-            setState(() {
-              _progressHUD.state.show();
-            });
-          }
-        });
-      }
+
       List<CardInfo> cardList = card.cardList;
       return Scaffold(
         body: new Stack(children: [
