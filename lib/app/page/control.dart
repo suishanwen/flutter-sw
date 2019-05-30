@@ -21,6 +21,15 @@ class _ControlPage extends State<Control> {
 
   @override
   Widget build(BuildContext context) {
+    var vm1Ctrl = new TextEditingController.fromValue(TextEditingValue(
+      text: ctrl.startNum.toString(),
+    ));
+    var vm2Ctrl = new TextEditingController.fromValue(TextEditingValue(
+      text: ctrl.endNum.toString(),
+    ));
+    var workerCtrl = new TextEditingController.fromValue(TextEditingValue(
+      text: ctrl.workerId,
+    ));
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(ctrl.uname),
@@ -48,6 +57,7 @@ class _ControlPage extends State<Control> {
                   Container(
                       width: 40,
                       child: TextField(
+                        controller: vm1Ctrl,
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(10.0),
                             border: OutlineInputBorder(
@@ -64,6 +74,7 @@ class _ControlPage extends State<Control> {
                   Container(
                       width: 40,
                       child: TextField(
+                        controller: vm2Ctrl,
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(10.0),
                             border: OutlineInputBorder(
@@ -102,6 +113,7 @@ class _ControlPage extends State<Control> {
                   Container(
                       width: 120,
                       child: TextField(
+                        controller: workerCtrl,
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(10.0),
                             border: OutlineInputBorder(
