@@ -7,6 +7,8 @@ import '../../model/appState.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import 'control.dart';
+
 class OnlineList extends StatefulWidget {
   final String userCode;
 
@@ -160,7 +162,13 @@ class _OnlineListState extends State<OnlineList> {
                                   Icons.mobile_screen_share,
                                   color: Colors.black,
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push<String>(context,
+                                      new MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                    return new Control(ctrl);
+                                  }));
+                                },
                               ),
                             ],
                           ),

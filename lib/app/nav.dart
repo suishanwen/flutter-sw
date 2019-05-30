@@ -77,13 +77,6 @@ class Nav extends StatelessWidget {
         }).toList();
       }
 
-      Future<Null> _onRefresh() async {
-        print('refresh');
-        await Future.delayed(Duration(seconds: 3), () {
-          print('refresh');
-        });
-      }
-
       return new Scaffold(
         appBar: new AppBar(
           title: new Text(getAppTitle()),
@@ -97,9 +90,7 @@ class Nav extends StatelessWidget {
             ),
           ],
         ),
-        body: RefreshIndicator(
-            onRefresh: _onRefresh,
-            child: new PageInfo(page.pageIndex, user.userCode)),
+        body: new PageInfo(page.pageIndex, user.userCode),
         bottomNavigationBar: new BottomNavigationBar(
           items: generateBottomNavigationBarItems(barItems),
           onTap: setPageIndex,
