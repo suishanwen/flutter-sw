@@ -4,6 +4,7 @@ import 'package:redux_thunk/redux_thunk.dart';
 import 'package:redux/redux.dart';
 import '../model/appState.dart';
 import '../model/telCard.dart';
+import 'baseAction.dart';
 
 Dio dio = new Dio();
 
@@ -27,16 +28,12 @@ class SetLoggingAction {
 
   SetLoggingAction(this.logging);
 }
-class SetLoadingAction {
-  final bool loading;
 
-  SetLoadingAction(this.loading);
-}
 
 ThunkAction<AppState> queryCardListAction(String userCode) {
   return (Store<AppState> store) async {
     //begin loading
-    store.dispatch(SetLoadingAction(true));
+    store.dispatch(LoadingAction(true));
     List<CardInfo> cardList = new List<CardInfo>();
     try {
       var response = await dio
@@ -48,7 +45,7 @@ ThunkAction<AppState> queryCardListAction(String userCode) {
     } catch (Exception) {}
     store.dispatch(LoadTelCardList(cardList));
     //end loading
-    store.dispatch(SetLoadingAction(false));
+    store.dispatch(LoadingAction(false));
   };
 }
 

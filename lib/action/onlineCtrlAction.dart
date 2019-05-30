@@ -4,7 +4,7 @@ import 'package:redux_thunk/redux_thunk.dart';
 import 'package:redux/redux.dart';
 import '../model/appState.dart';
 import '../model/onlineCtrl.dart';
-
+import 'baseAction.dart';
 Dio dio = new Dio();
 
 class InitOnlineCtrlAction {
@@ -23,16 +23,11 @@ class LoadOnlineCtrlList {
   LoadOnlineCtrlList(this.ctrlList);
 }
 
-class SetLoadingAction {
-  final bool loading;
-
-  SetLoadingAction(this.loading);
-}
 
 ThunkAction<AppState> queryCtrlListAction(String userCode) {
   return (Store<AppState> store) async {
     //begin loading
-    store.dispatch(SetLoadingAction(true));
+    store.dispatch(LoadingAction(true));
     List<Controller> ctrlList = new List<Controller>();
     try {
       var response = await dio
@@ -55,6 +50,6 @@ ThunkAction<AppState> queryCtrlListAction(String userCode) {
     }
     store.dispatch(LoadOnlineCtrlList(ctrlList));
     //end loading
-    store.dispatch(SetLoadingAction(false));
+    store.dispatch(LoadingAction(false));
   };
 }

@@ -5,7 +5,7 @@ import '../action/loginAction.dart';
 import '../action/cardAction.dart';
 import '../action/onlineCtrlAction.dart';
 
-class User extends Base {
+class User extends BaseModel {
   bool autoLogin = false;
   String userCode;
   final Function setUserCode;

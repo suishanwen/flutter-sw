@@ -2,23 +2,21 @@ import 'package:web_socket_channel/io.dart';
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-class Log extends StatefulWidget {
-  final String id;
-  String logs;
+class Control extends StatefulWidget {
+  final String identity;
   WebSocketChannel channel;
 
-  Log(this.id);
+  Control(this.identity);
 
   @override
-  _LogPage createState() => new _LogPage();
+  _ControlPage createState() => new _ControlPage();
 }
 
-class _LogPage extends State<Log> {
+class _ControlPage extends State<Control> {
   @override
   Widget build(BuildContext context) {
     widget.channel = new IOWebSocketChannel.connect(
-        'wss://socket.bitcoinrobot.cn/${widget.id}');
-    widget.logs = "";
+        'ws://bitcoinrobot.cn:8051/sw/api/websocket/${widget.identity}_mobi');
     return new Scaffold(
       body: new SingleChildScrollView(
           child: new Padding(
@@ -26,18 +24,11 @@ class _LogPage extends State<Log> {
               child: new StreamBuilder(
                 stream: widget.channel.stream,
                 builder: (context, snapshot) {
+                  var data = "";
                   if (snapshot.hasData) {
-                    var data = snapshot.data.toString();
-                    if (widget.id == "1") {
-                      if (data.contains("[Tel]")) {
-                        widget.logs =
-                            "${data.replaceFirst("[Tel]", "")}\n\n${widget.logs}";
-                      }
-                    } else {
-                      widget.logs = "${data}\n\n${widget.logs}";
-                    }
+                    data = snapshot.data.toString();
                   }
-                  return new Text(widget.logs);
+                  return new Text(data);
                 },
               ))),
     );

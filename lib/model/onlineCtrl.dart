@@ -25,7 +25,7 @@ class Controller {
   Map<String, dynamic> toJson() => _$ControllerToJson(this);
 }
 
-class OnlineCtrl extends Base {
+class OnlineCtrl extends BaseModel {
   List<Controller> ctrlList;
   final Function loadCtrlList;
 

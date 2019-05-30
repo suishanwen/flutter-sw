@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:sw/app/app.dart';
+import 'app/animate/progress.dart';
 import 'model/appState.dart';
 
 class ReduxApp extends StatelessWidget {
@@ -13,7 +14,9 @@ class ReduxApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new StoreProvider<AppState>(
       store: store,
-      child: new App(),
+      child: new Stack(
+        children: <Widget>[new App(), new Progress()],
+      ),
     );
   }
 }

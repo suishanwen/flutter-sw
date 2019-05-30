@@ -26,7 +26,7 @@ class CardInfo {
   Map<String, dynamic> toJson() => _$CardInfoToJson(this);
 }
 
-class TelCard extends Base {
+class TelCard extends BaseModel {
   List<CardInfo> cardList;
   final Function loadCardList;
   final Function queryNet;

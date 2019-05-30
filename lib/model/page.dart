@@ -2,7 +2,7 @@ import 'package:redux/redux.dart';
 import '../model/appState.dart';
 import '../action/navAction.dart';
 
-class Page extends Base {
+class Page extends BaseModel {
   int pageIndex;
   final Function setPageIndex;
 

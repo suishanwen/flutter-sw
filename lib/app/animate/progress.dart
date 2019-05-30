@@ -1,69 +1,43 @@
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:progress_hud/progress_hud.dart';
+import 'package:sw/model/appState.dart';
+import 'package:sw/model/baseState.dart';
 
-Dio dio = new Dio();
+class Progress extends StatefulWidget {
+  Progress();
 
-class DlProgress extends StatefulWidget {
-  final String identity;
-
-  DlProgress(this.identity);
-
-  _AnimationApp createState() => new _AnimationApp();
+  _Progress createState() => new _Progress();
 }
 
-class _AnimationApp extends State<DlProgress>
-    with SingleTickerProviderStateMixin {
-  Animation<double> tween;
-  AnimationController controller;
+class _Progress extends State<Progress> {
+  ProgressHUD _progressHUD;
 
-  /*初始化状态*/
   initState() {
     super.initState();
-
-    /*创建动画控制类对象*/
-    controller = new AnimationController(
-        duration: const Duration(milliseconds: 3000), vsync: this);
-
-    /*创建补间对象*/
-    tween = new Tween(begin: 0.0, end: 1.0).animate(controller) //返回Animation对象
-      ..addListener(() {
-        if (tween.value == 1.0) {
-          dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl", data: {
-            "code": "REPORT_STATE_LESS",
-            "identity": widget.identity
-          });
-          controller.forward(from: 0.0);
-        }
-        setState(() {
-        });
-      });
-    controller.forward(); //执行动画
+    _progressHUD = new ProgressHUD(
+      backgroundColor: Colors.black12,
+      color: Colors.white,
+      containerColor: Colors.blue,
+      borderRadius: 5.0,
+      text: 'Loading...',
+      loading: false,
+    );
   }
 
+  @override
   Widget build(BuildContext context) {
-    return new GestureDetector(
-        onTap: () {
-          startAnimtaion(); //点击文本 重新执行动画
-        },
-        child: SizedBox(
-          height: 20,
-          width: 20,
-          child: CircularProgressIndicator(
-            value: controller.value,
-          ),
-        ));
-  }
-
-  startAnimtaion() {
-    setState(() {
-      controller.forward(from: 0.0);
+    return new StoreConnector<AppState, BaseState>(converter: (store) {
+      if (mounted && _progressHUD.state != null) {
+        if (store.state.base.loading) {
+          _progressHUD.state.show();
+        } else {
+          _progressHUD.state.dismiss();
+        }
+      }
+      return store.state.base;
+    }, builder: (context, base) {
+      return _progressHUD;
     });
-  }
-
-  dispose() {
-    //销毁控制器对象
-    controller.dispose();
-    super.dispose();
   }
 }

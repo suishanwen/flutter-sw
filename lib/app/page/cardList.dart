@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:common_utils/common_utils.dart';
-import 'package:progress_hud/progress_hud.dart';
 import '../../model/telCard.dart';
 import '../../model/appState.dart';
 import 'log.dart';
@@ -16,19 +15,9 @@ class CardList extends StatefulWidget {
 }
 
 class _CardState extends State<CardList> {
-  ProgressHUD _progressHUD;
-
   @override
   void initState() {
     super.initState();
-    _progressHUD = new ProgressHUD(
-      backgroundColor: Colors.black12,
-      color: Colors.white,
-      containerColor: Colors.blue,
-      borderRadius: 5.0,
-      text: 'Loading...',
-      loading: false,
-    );
   }
 
   @override
@@ -50,7 +39,7 @@ class _CardState extends State<CardList> {
             content: new Log("1"),
           );
         } else {
-          return _progressHUD;
+          return new Container(width: 0,height: 0,);
         }
       }
 
