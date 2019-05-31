@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:sw/action/socketAction.dart';
 import 'package:sw/app/animate/heart.dart';
 import 'package:sw/app/animate/dlProgress.dart';
 import 'package:sw/model/dataset/controller.dart';
@@ -31,7 +32,7 @@ class _OnlineListState extends State<OnlineList> {
       OnlineCtrl onlineCtrl;
       if (!store.state.onlineCtrl.init) {
         onlineCtrl = OnlineCtrl.create(store);
-        onlineCtrl.loadCtrlList(widget.userCode);
+        onlineCtrl.loadCtrlList(widget.userCode, true);
       } else {
         onlineCtrl = store.state.onlineCtrl;
       }
@@ -76,6 +77,18 @@ class _OnlineListState extends State<OnlineList> {
                       //card里面的子控件
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
+                        new Align(
+                            alignment: new FractionalOffset(1.0, 0.0),
+                            child: Container(
+                                padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                child: Transform.rotate(
+                                  angle: 1.0,
+                                  child: Text(
+                                    '${ctrl.autoVote == 1 ? "自动" : "人工"}',
+                                    style: TextStyle(
+                                        color: Colors.lightGreenAccent),
+                                  ),
+                                ))),
                         ListTile(
                           leading: Column(
                               //card里面的子控件
@@ -110,11 +123,21 @@ class _OnlineListState extends State<OnlineList> {
                                     new Map<String, String>();
                                 if (snapshot.hasData) {
                                   var data = snapshot.data.toString();
-                                  data.split("&").forEach((f) {
-                                    List<String> arr = f.split("=");
-                                    map.putIfAbsent(arr[0],
-                                        () => arr.length == 2 ? arr[1] : "");
-                                  });
+                                  if (data == SocketAction.REFRESH_PROTECT) {
+                                  } else if (mounted &&
+                                      data == SocketAction.REFRESH_STATE) {
+                                    new Future.delayed(
+                                        const Duration(seconds: 1), () {
+                                      onlineCtrl.loadCtrlList(
+                                          widget.userCode, false);
+                                    });
+                                  } else {
+                                    data.split("&").forEach((f) {
+                                      List<String> arr = f.split("=");
+                                      map.putIfAbsent(arr[0],
+                                          () => arr.length == 2 ? arr[1] : "");
+                                    });
+                                  }
                                   heart.beat();
                                 }
                                 return Column(
@@ -155,7 +178,8 @@ class _OnlineListState extends State<OnlineList> {
                                 onPressed: () {},
                               ),
                               FlatButton(
-                                child: new DlProgress(ctrl.identity),
+                                child: new DlProgress(ctrl.identity,
+                                    SocketAction.REPORT_STATE_LESS),
                                 onPressed: () {},
                               ),
                               FlatButton(
@@ -168,7 +192,9 @@ class _OnlineListState extends State<OnlineList> {
                                       new MaterialPageRoute(
                                           builder: (BuildContext context) {
                                     return new Control(ctrl);
-                                  }));
+                                  })).then((val) {
+                                    Navigator.of(context).pushReplacementNamed('/nav');
+                                  });
                                 },
                               ),
                             ],
@@ -181,11 +207,11 @@ class _OnlineListState extends State<OnlineList> {
           ),
         ]),
         floatingActionButton: new FloatingActionButton(
-          tooltip: '刷新', // used by assistive technologies
+          tooltip: '刷新',
           child: new Icon(Icons.refresh),
           backgroundColor: Colors.grey,
           onPressed: () {
-            onlineCtrl.loadCtrlList(widget.userCode);
+            onlineCtrl.loadCtrlList(widget.userCode, true);
           },
         ),
       );

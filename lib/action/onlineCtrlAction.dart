@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 import 'package:redux/redux.dart';
+import 'package:sw/action/socketAction.dart';
 import 'package:sw/model/dataset/controller.dart';
 import '../model/appState.dart';
 import '../model/onlineCtrl.dart';
 import 'baseAction.dart';
+
 Dio dio = new Dio();
 
 class InitOnlineCtrlAction {
@@ -24,8 +26,7 @@ class LoadOnlineCtrlList {
   LoadOnlineCtrlList(this.ctrlList);
 }
 
-
-ThunkAction<AppState> queryCtrlListAction(String userCode) {
+ThunkAction<AppState> queryCtrlListAction(String userCode, bool report) {
   return (Store<AppState> store) async {
     //begin loading
     store.dispatch(LoadingAction(true));
@@ -36,14 +37,15 @@ ThunkAction<AppState> queryCtrlListAction(String userCode) {
       if (response.statusCode == 200) {
         List<dynamic> data = response.data;
         data.forEach((f) {
-          Controller ctrl = new Controller.fromJson(json.decode(json.encode(f)));
-          dio.post(
-              "https://bitcoinrobot.cn/api/mq/send/ctrl",
-              data: {
-                "code": "REPORT_STATE",
-                "identity": ctrl.identity
-              });
+          Controller ctrl =
+              new Controller.fromJson(json.decode(json.encode(f)));
           ctrlList.add(ctrl);
+          if (report) {
+             dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl", data: {
+              "code": SocketAction.REPORT_STATE,
+              "identity": ctrl.identity
+            });
+          }
         });
       }
     } catch (e) {

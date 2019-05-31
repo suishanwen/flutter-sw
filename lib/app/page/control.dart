@@ -2,9 +2,14 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:sw/action/socketAction.dart';
+import 'package:sw/app/animate/dlProgress.dart';
+import 'package:sw/app/animate/heart.dart';
 import 'package:sw/model/dataset/controller.dart';
 import 'package:sw/model/dataset/voteProject.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 Dio dio = new Dio();
 
@@ -20,6 +25,17 @@ class Control extends StatefulWidget {
 class _ControlPage extends State<Control> {
   Controller ctrl;
   List<VoteProject> projectList = new List<VoteProject>();
+  Heart heart = new Heart();
+  WebSocketChannel channel;
+
+  @override
+  void initState() {
+    super.initState();
+    ctrl = widget.ctrl;
+    channel = new IOWebSocketChannel.connect(
+        'ws://bitcoinrobot.cn:8051/sw/api/websocket/${ctrl.identity}_mobi');
+    getVoteInfo();
+  }
 
   _launchURL(url) async {
     if (await canLaunch(url)) {
@@ -27,6 +43,19 @@ class _ControlPage extends State<Control> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  getCtrlInfo() {
+    dio
+        .post("https://bitcoinrobot.cn/api/vote/query", data: ctrl.identity)
+        .then((resp) {
+      if (resp.statusCode == 200) {
+        setState(() {
+          ctrl = new Controller.fromJson(json.decode(json.encode(resp.data)));
+        });
+        heart.beat();
+      }
+    });
   }
 
   getVoteInfo() {
@@ -101,13 +130,6 @@ class _ControlPage extends State<Control> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    ctrl = widget.ctrl;
-    getVoteInfo();
-  }
-
-  @override
   Widget build(BuildContext context) {
     var vm1Ctrl = new TextEditingController.fromValue(TextEditingValue(
         text: ctrl.startNum.toString(),
@@ -126,6 +148,16 @@ class _ControlPage extends State<Control> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(ctrl.uname),
+        actions: <Widget>[
+          FlatButton(
+            child: heart,
+            onPressed: () {},
+          ),
+          FlatButton(
+            child: new DlProgress(ctrl.identity, SocketAction.REPORT_STATE),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: new Stack(
         children: <Widget>[
@@ -193,7 +225,7 @@ class _ControlPage extends State<Control> {
                       child: Checkbox(
                           activeColor: Colors.blue,
                           tristate: false,
-                          value: ctrl.tail == 1,
+                          value: ctrl.workerInput == 1,
                           onChanged: (bool bol) {
                             if (mounted) {}
                           })),
@@ -396,16 +428,43 @@ class _ControlPage extends State<Control> {
                     ),
                   )
                 ],
-              )
+              ),
+              StreamBuilder(
+                  stream: channel.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      var data = snapshot.data.toString();
+                      if (data == SocketAction.REFRESH_STATE) {
+                        new Future.delayed(const Duration(seconds: 1), () {
+                          getCtrlInfo();
+                          getVoteInfo();
+                        });
+                      }
+                    }
+                    return Container(
+                      width: 0,
+                      height: 0,
+                    );
+                  })
             ],
           )
         ],
+      ),
+      floatingActionButton: new FloatingActionButton(
+        tooltip: '刷新', // used by assistive technologies
+        child: new Icon(Icons.refresh),
+        backgroundColor: Colors.grey,
+        onPressed: () {
+          getVoteInfo();
+          getCtrlInfo();
+        },
       ),
     );
   }
 
   @override
   void dispose() {
+    print("channer ${ctrl.identity}_mobi close");
     super.dispose();
   }
 }

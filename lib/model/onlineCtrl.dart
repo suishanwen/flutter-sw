@@ -13,7 +13,7 @@ class OnlineCtrl extends BaseModel {
 
   factory OnlineCtrl.create(Store<AppState> store) {
     OnlineCtrl onlineCtrl = OnlineCtrl(new List(),
-        (userCode) => store.dispatch(queryCtrlListAction(userCode)));
+        (userCode,report) => store.dispatch(queryCtrlListAction(userCode,report)));
     store.dispatch(InitOnlineCtrlAction(onlineCtrl));
     return onlineCtrl;
   }

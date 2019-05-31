@@ -6,8 +6,9 @@ Dio dio = new Dio();
 
 class DlProgress extends StatefulWidget {
   final String identity;
+  final String type;
 
-  DlProgress(this.identity);
+  DlProgress(this.identity, this.type);
 
   _AnimationApp createState() => new _AnimationApp();
 }
@@ -29,14 +30,11 @@ class _AnimationApp extends State<DlProgress>
     tween = new Tween(begin: 0.0, end: 1.0).animate(controller) //返回Animation对象
       ..addListener(() {
         if (tween.value == 1.0) {
-          dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl", data: {
-            "code": "REPORT_STATE_LESS",
-            "identity": widget.identity
-          });
+          dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl",
+              data: {"code": widget.type, "identity": widget.identity});
           controller.forward(from: 0.0);
         }
-        setState(() {
-        });
+        setState(() {});
       });
     controller.forward(); //执行动画
   }
