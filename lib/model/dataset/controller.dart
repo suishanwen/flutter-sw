@@ -11,7 +11,7 @@ class Controller {
   String workerId;
   int workerInput;
   int tail;
-  int overTime;
+  int timeout;
   int autoVote;
   int overAuto;
   String user;

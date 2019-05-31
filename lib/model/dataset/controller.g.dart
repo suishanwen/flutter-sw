@@ -15,7 +15,7 @@ Controller _$ControllerFromJson(Map<String, dynamic> json) {
     ..workerId = json['workerId'] as String
     ..workerInput = json['workerInput'] as int
     ..tail = json['tail'] as int
-    ..overTime = json['overTime'] as int
+    ..timeout = json['timeout'] as int
     ..autoVote = json['autoVote'] as int
     ..overAuto = json['overAuto'] as int
     ..user = json['user'] as String
@@ -31,7 +31,7 @@ Map<String, dynamic> _$ControllerToJson(Controller instance) =>
       'workerId': instance.workerId,
       'workerInput': instance.workerInput,
       'tail': instance.tail,
-      'overTime': instance.overTime,
+      'timeout': instance.timeout,
       'autoVote': instance.autoVote,
       'overAuto': instance.overAuto,
       'user': instance.user,

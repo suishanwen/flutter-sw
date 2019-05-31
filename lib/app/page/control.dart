@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:sw/action/socketAction.dart';
 import 'package:sw/app/animate/dlProgress.dart';
 import 'package:sw/app/animate/heart.dart';
@@ -27,6 +28,7 @@ class _ControlPage extends State<Control> {
   List<VoteProject> projectList = new List<VoteProject>();
   Heart heart = new Heart();
   WebSocketChannel channel;
+  String replugSort = "";
 
   @override
   void initState() {
@@ -59,16 +61,49 @@ class _ControlPage extends State<Control> {
   }
 
   getVoteInfo() {
-    dio.get("https://tl.bitcoinrobot.cn/voteInfo/").then((response) {
+    dio.get("https://tl.bitcoinrobot.cn/voteInfo/?idAdsl=1").then((response) {
       List<dynamic> data = json.decode(response.data);
       projectList = new List<VoteProject>();
       data.forEach((e) {
-        projectList.add(new VoteProject.fromJson(e));
+        VoteProject voteProject = new VoteProject.fromJson(e);
+        projectList.add(voteProject);
       });
       setState(() {
         projectList = projectList;
       });
     });
+  }
+
+  control(String code) {
+    if(code.contains("TASK")||code.contains("AUTO_VOTE_INDEX_NAME_START")) {
+      showDialog(
+        context: context,
+        builder: (_) =>
+            PlatformAlertDialog(
+              title: Text('提示'),
+              content: Text('确定要执行？\n${code}'),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text('取消'),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                ),
+                new FlatButton(
+                  child: new Text('确定'),
+                  onPressed: () {
+                    dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl",
+                        data: {"code": code, "identity": ctrl.identity});
+                    Navigator.of(context, rootNavigator: true).pop('dialog');
+                  },
+                )
+              ],
+            ),
+      );
+    }else {
+      dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl",
+          data: {"code": code, "identity": ctrl.identity});
+    }
   }
 
   List<TableRow> getTableRows() {
@@ -95,7 +130,10 @@ class _ControlPage extends State<Control> {
             onTap: () {
               _launchURL(item.backgroundAddress);
             },
-            onLongPress: () {},
+            onLongPress: () {
+              control(
+                  "${SocketAction.AUTO_VOTE_INDEX_NAME_START}:${item.projectName}");
+            },
           ),
           Text('${item.price}'),
           Text('${item.remains}'),
@@ -145,6 +183,16 @@ class _ControlPage extends State<Control> {
         text: ctrl.workerId,
         selection: TextSelection.fromPosition(TextPosition(
             affinity: TextAffinity.downstream, offset: ctrl.workerId.length))));
+    var timeoutCtrl = new TextEditingController.fromValue(TextEditingValue(
+        text: ctrl.timeout.toString(),
+        selection: TextSelection.fromPosition(TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: ctrl.timeout.toString().length))));
+    var replugCtrl = new TextEditingController.fromValue(TextEditingValue(
+        text: replugSort,
+        selection: TextSelection.fromPosition(TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: replugSort.toString().length))));
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(ctrl.uname),
@@ -182,13 +230,17 @@ class _ControlPage extends State<Control> {
                   Container(
                       width: 40,
                       child: TextField(
-                        controller: vm1Ctrl,
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            )),
-                      )),
+                          controller: vm1Ctrl,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )),
+                          onChanged: (val) {
+                            if (val != "") {
+                              control("${SocketAction.FORM1_VM1}:${val}");
+                            }
+                          })),
                   Container(
                     width: 40,
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 5.0),
@@ -199,23 +251,29 @@ class _ControlPage extends State<Control> {
                   Container(
                       width: 40,
                       child: TextField(
-                        controller: vm2Ctrl,
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            )),
-                      )),
+                          controller: vm2Ctrl,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )),
+                          onChanged: (val) {
+                            if (val != "") {
+                              control("${SocketAction.FORM1_VM2}:${val}");
+                            }
+                          })),
                   Container(
                       margin: const EdgeInsets.fromLTRB(30.0, 0, 0, 0),
                       width: 40,
                       child: TextField(
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            )),
-                      ))
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )),
+                          onChanged: (val) {
+                            control("${SocketAction.FORM1_VM3}:${val}");
+                          }))
                 ],
               ),
               Row(
@@ -226,8 +284,10 @@ class _ControlPage extends State<Control> {
                           activeColor: Colors.blue,
                           tristate: false,
                           value: ctrl.workerInput == 1,
-                          onChanged: (bool bol) {
-                            if (mounted) {}
+                          onChanged: (bool val) {
+                            if (mounted) {
+                              control(SocketAction.FORM1_WORKER_INPUT);
+                            }
                           })),
                   Container(
                     width: 40,
@@ -238,13 +298,18 @@ class _ControlPage extends State<Control> {
                   Container(
                       width: 120,
                       child: TextField(
-                        controller: workerCtrl,
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            )),
-                      )),
+                          controller: workerCtrl,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )),
+                          onChanged: (val) {
+                            if (val != "") {
+                              control(
+                                  "${SocketAction.FORM1_WORKER_SET}:${val}");
+                            }
+                          })),
                   Container(
                       width: 55,
                       child: Checkbox(
@@ -252,7 +317,9 @@ class _ControlPage extends State<Control> {
                           tristate: false,
                           value: ctrl.tail == 1,
                           onChanged: (bool bol) {
-                            if (mounted) {}
+                            if (mounted) {
+                              control(SocketAction.FORM1_WORKER_TAIL);
+                            }
                           })),
                   Container(
                     width: 40,
@@ -276,7 +343,9 @@ class _ControlPage extends State<Control> {
                       width: 90,
                       margin: const EdgeInsets.all(10),
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            control(SocketAction.TASK_SYS_WAIT_ORDER);
+                          },
                           color: Colors.white,
                           icon: Icon(Icons.store_mall_directory),
                           label: new Text("待命"))),
@@ -284,7 +353,9 @@ class _ControlPage extends State<Control> {
                       width: 90,
                       margin: const EdgeInsets.all(10),
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            control(SocketAction.TASK_SYS_SHUTDOWN);
+                          },
                           color: Colors.cyanAccent,
                           icon: Icon(Icons.shutter_speed),
                           label: new Text("关机"))),
@@ -292,7 +363,9 @@ class _ControlPage extends State<Control> {
                       width: 90,
                       margin: const EdgeInsets.all(10),
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            control(SocketAction.TASK_SYS_RESTART);
+                          },
                           color: Colors.redAccent,
                           icon: Icon(Icons.restore),
                           label: new Text("重启"))),
@@ -304,7 +377,9 @@ class _ControlPage extends State<Control> {
                       width: 90,
                       margin: const EdgeInsets.fromLTRB(40.0, 10, 10, 10),
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            control(SocketAction.TASK_SYS_NET_TEST);
+                          },
                           color: Colors.black38,
                           icon: Icon(Icons.network_check),
                           label: new Text("测网"))),
@@ -312,7 +387,9 @@ class _ControlPage extends State<Control> {
                       width: 90,
                       margin: const EdgeInsets.all(10),
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            control(SocketAction.TASK_SYS_CLEAN);
+                          },
                           color: Colors.green,
                           icon: Icon(Icons.clear),
                           label: new Text("清理"))),
@@ -320,7 +397,9 @@ class _ControlPage extends State<Control> {
                       width: 90,
                       margin: const EdgeInsets.all(10),
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            control(SocketAction.TASK_SYS_UPDATE);
+                          },
                           color: Colors.deepOrange,
                           icon: Icon(Icons.arrow_upward),
                           label: new Text("升级"))),
@@ -365,6 +444,32 @@ class _ControlPage extends State<Control> {
               Row(
                 children: <Widget>[
                   Container(
+                      width: 130,
+                      margin: const EdgeInsets.fromLTRB(40, 10, 10, 10),
+                      child: FlatButton.icon(
+                          onPressed: () {
+                            control(SocketAction.AUTO_VOTE_SET1);
+                          },
+                          color: Colors.lime,
+                          icon: Icon(Icons.insert_drive_file),
+                          label: new Text(
+                              "${ctrl.autoVote == 1 ? "关闭" : "开启"}自动"))),
+                  Container(
+                      width: 150,
+                      margin: const EdgeInsets.all(10),
+                      child: FlatButton.icon(
+                          onPressed: () {
+                            control(SocketAction.AUTO_VOTE_SET2);
+                          },
+                          color: Colors.pink,
+                          icon: Icon(Icons.clear_all),
+                          label: new Text(
+                              "${ctrl.overAuto == 1 ? "关闭" : "开启"}到票自动"))),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Container(
                       width: 90,
                       child: FlatButton.icon(
                           onPressed: () {},
@@ -381,26 +486,45 @@ class _ControlPage extends State<Control> {
                   Container(
                       width: 45,
                       child: TextField(
-                        decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10.0),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            )),
-                      )),
+                          controller: timeoutCtrl,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )),
+                          onChanged: (val) {
+                            if (val != "") {
+                              control("${SocketAction.FORM1_TIMEOUT}:${val}");
+                            }
+                          })),
                   Container(
                       width: 45,
                       margin: const EdgeInsets.fromLTRB(30.0, 0, 0, 0),
                       child: TextField(
+                        controller: replugCtrl,
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(10.0),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             )),
+                        onChanged: (val) {
+                          setState(() {
+                            replugSort = val;
+                          });
+                        },
                       )),
                   Container(
                       width: 90,
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            if (replugSort != "") {
+                              control(
+                                  "${SocketAction.TASK_EXEC_REPLUG}:${replugSort}");
+                            }
+                            setState(() {
+                              replugSort = "";
+                            });
+                          },
                           color: Colors.amber,
                           icon: Icon(Icons.send),
                           label: new Text("重置"))),
@@ -437,7 +561,6 @@ class _ControlPage extends State<Control> {
                       if (data == SocketAction.REFRESH_STATE) {
                         new Future.delayed(const Duration(seconds: 1), () {
                           getCtrlInfo();
-                          getVoteInfo();
                         });
                       }
                     }
