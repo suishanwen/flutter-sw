@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 import 'package:redux/redux.dart';
+import 'package:sw/model/dataset/cardInfo.dart';
 import '../model/appState.dart';
 import '../model/telCard.dart';
 import 'baseAction.dart';

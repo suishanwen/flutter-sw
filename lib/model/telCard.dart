@@ -1,30 +1,7 @@
 import 'package:redux/redux.dart';
-import 'package:json_annotation/json_annotation.dart';
 import '../action/cardAction.dart';
 import '../model/appState.dart';
-
-part 'telCard.g.dart';
-
-@JsonSerializable()
-class CardInfo {
-  int id;
-  String phone;
-  String encryptPassword;
-  String icc_id;
-  String user;
-  String net;
-  String remark;
-  int sort;
-  DateTime update;
-
-  CardInfo(this.id, this.phone, this.encryptPassword, this.icc_id, this.user,
-      this.net, this.remark, this.sort, this.update);
-
-  factory CardInfo.fromJson(Map<String, dynamic> json) =>
-      _$CardInfoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CardInfoToJson(this);
-}
+import 'dataset/cardInfo.dart';
 
 class TelCard extends BaseModel {
   List<CardInfo> cardList;

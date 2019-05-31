@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:common_utils/common_utils.dart';
+import 'package:sw/model/dataset/cardInfo.dart';
 import '../../model/telCard.dart';
 import '../../model/appState.dart';
 import 'log.dart';

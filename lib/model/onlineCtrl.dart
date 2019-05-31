@@ -1,29 +1,9 @@
 import 'package:redux/redux.dart';
-import 'package:json_annotation/json_annotation.dart';
 import '../action/onlineCtrlAction.dart';
 import '../model/appState.dart';
+import 'dataset/controller.dart';
 
-part 'onlineCtrl.g.dart';
 
-@JsonSerializable()
-class Controller {
-  String identity;
-  String uname;
-  int startNum;
-  int endNum;
-  String workerId;
-  int tail;
-  int autoVote;
-  String user;
-  int sort;
-
-  Controller();
-
-  factory Controller.fromJson(Map<String, dynamic> json) =>
-      _$ControllerFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ControllerToJson(this);
-}
 
 class OnlineCtrl extends BaseModel {
   List<Controller> ctrlList;

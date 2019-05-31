@@ -4,7 +4,7 @@ import 'package:outline_material_icons/outline_material_icons.dart';
 import '../model/page.dart';
 import '../model/user.dart';
 import '../model/appState.dart';
-import 'package:sw/app/page/pageInfo.dart';
+import 'package:sw/app/pageInfo.dart';
 
 class IconInfo {
   int page;

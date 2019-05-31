@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'telCard.dart';
+part of 'cardInfo.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

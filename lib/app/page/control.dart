@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:sw/model/onlineCtrl.dart';
+import 'package:sw/model/dataset/controller.dart';
+import 'package:sw/model/dataset/voteProject.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+Dio dio = new Dio();
 
 class Control extends StatefulWidget {
   final Controller ctrl;
@@ -12,24 +19,110 @@ class Control extends StatefulWidget {
 
 class _ControlPage extends State<Control> {
   Controller ctrl;
+  List<VoteProject> projectList = new List<VoteProject>();
+
+  _launchURL(url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  getVoteInfo() {
+    dio.get("https://tl.bitcoinrobot.cn/voteInfo/").then((response) {
+      List<dynamic> data = json.decode(response.data);
+      projectList = new List<VoteProject>();
+      data.forEach((e) {
+        projectList.add(new VoteProject.fromJson(e));
+      });
+      setState(() {
+        projectList = projectList;
+      });
+    });
+  }
+
+  List<TableRow> getTableRows() {
+    List<TableRow> rows = new List<TableRow>();
+    rows.add(TableRow(
+      children: [
+        Text('项目'),
+        Text('价格'),
+        Text('剩余'),
+        Text('热度'),
+        Text('类型'),
+        Text('黑'),
+        Text('顶'),
+      ],
+    ));
+    rows.addAll(projectList.map((VoteProject item) {
+      return TableRow(
+        children: [
+          GestureDetector(
+            child: Text(
+              '${item.projectName}',
+              style: TextStyle(color: Colors.lightBlue),
+            ),
+            onTap: () {
+              _launchURL(item.backgroundAddress);
+            },
+            onLongPress: () {},
+          ),
+          Text('${item.price}'),
+          Text('${item.remains}'),
+          Text('${item.hot}'),
+          Text('${item.idType}'),
+          Container(
+            width: 40,
+            height: 30,
+            child: Checkbox(
+                activeColor: Colors.blue,
+                tristate: false,
+                value: false,
+                onChanged: (bool bol) {
+                  if (mounted) {}
+                }),
+          ),
+          Container(
+            width: 40,
+            height: 30,
+            child: Checkbox(
+                activeColor: Colors.blue,
+                tristate: false,
+                value: false,
+                onChanged: (bool bol) {
+                  if (mounted) {}
+                }),
+          ),
+        ],
+      );
+    }).toList());
+    return rows;
+  }
 
   @override
   void initState() {
     super.initState();
     ctrl = widget.ctrl;
+    getVoteInfo();
   }
 
   @override
   Widget build(BuildContext context) {
     var vm1Ctrl = new TextEditingController.fromValue(TextEditingValue(
-      text: ctrl.startNum.toString(),
-    ));
+        text: ctrl.startNum.toString(),
+        selection: TextSelection.fromPosition(TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: ctrl.startNum.toString().length))));
     var vm2Ctrl = new TextEditingController.fromValue(TextEditingValue(
-      text: ctrl.endNum.toString(),
-    ));
+        text: ctrl.endNum.toString(),
+        selection: TextSelection.fromPosition(TextPosition(
+            affinity: TextAffinity.downstream,
+            offset: ctrl.endNum.toString().length))));
     var workerCtrl = new TextEditingController.fromValue(TextEditingValue(
-      text: ctrl.workerId,
-    ));
+        text: ctrl.workerId,
+        selection: TextSelection.fromPosition(TextPosition(
+            affinity: TextAffinity.downstream, offset: ctrl.workerId.length))));
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(ctrl.uname),
@@ -281,6 +374,29 @@ class _ControlPage extends State<Control> {
                           label: new Text("重置"))),
                 ],
               ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child: Table(
+                      columnWidths: const {
+                        0: FixedColumnWidth(120.0),
+                        1: FixedColumnWidth(40.0),
+                        2: FixedColumnWidth(50.0),
+                        3: FixedColumnWidth(40.0),
+                        4: FixedColumnWidth(40.0),
+                        5: FixedColumnWidth(40.0),
+                        6: FixedColumnWidth(40.0),
+                      },
+                      border: TableBorder.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                          style: BorderStyle.solid),
+                      children: getTableRows(),
+                    ),
+                  )
+                ],
+              )
             ],
           )
         ],
