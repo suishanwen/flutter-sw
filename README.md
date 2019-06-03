@@ -8,11 +8,9 @@ A new Flutter application by suishanwen@icloud.com.
 ## Getting Started
 
 flutter packages pub run build_runner build
+
 <div>
- <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/login.jpeg" width="400" height="800"/> 
-</div>
-<div>
-  <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/card.jpeg" width="400" height="800"/> 
+  <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/card.png" width="400" height="800"/> 
   <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/netLog.png" width="400" height="800"/> 
 </div>
 <div>
@@ -20,5 +18,6 @@ flutter packages pub run build_runner build
   <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/ctrl.png" width="400" height="800"/> 
 </div>
 <div>
-  <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/log.jpeg" width="400" height="800"/> 
+  <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/login.png" width="400" height="800"/> 
+  <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/log.png" width="400" height="800"/> 
 </div>
