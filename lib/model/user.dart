@@ -3,7 +3,6 @@ import 'package:redux/redux.dart';
 import '../model/appState.dart';
 import '../action/loginAction.dart';
 import '../action/cardAction.dart';
-import '../action/onlineCtrlAction.dart';
 
 class User extends BaseModel {
   bool autoLogin = false;
@@ -18,7 +17,6 @@ class User extends BaseModel {
       return store.dispatch(UserCodeAction(userCode));
     }, (userCode) {
       store.dispatch(ResetCardInitAction());
-      store.dispatch(ResetOnlineCtrlInitAction());
       return store.dispatch(LoginAction(userCode));
     });
     store.dispatch(asyncInitUserAction(user));
