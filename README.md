@@ -16,7 +16,7 @@ flutter packages pub run build_runner build
 </div>
 <div>
   <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/card.png" width="400" height="666"/> 
-  <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/netLog.png" width="400" height="666"/> 
+  <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/netLogger.png" width="400" height="666"/> 
 </div>
 <div>
   <img stlye="display:inline-block" src="http://bitcoinrobot.cn/file/img/login.png" width="400" height="666"/> 
