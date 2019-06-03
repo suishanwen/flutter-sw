@@ -37,6 +37,12 @@ class _ControlPage extends State<Control> {
     channel = new IOWebSocketChannel.connect(
         'ws://bitcoinrobot.cn:8051/sw/api/websocket/${ctrl.identity}_mobi');
     getVoteInfo();
+    reportState();
+    channel.stream.listen((data) {
+      if (data.contains("startNum")) {
+        getCtrlInfo(data);
+      }
+    });
   }
 
   _launchURL(url) async {
@@ -47,17 +53,28 @@ class _ControlPage extends State<Control> {
     }
   }
 
-  getCtrlInfo() {
-    dio
-        .post("https://bitcoinrobot.cn/api/vote/query", data: ctrl.identity)
-        .then((resp) {
-      if (resp.statusCode == 200) {
-        setState(() {
-          ctrl = new Controller.fromJson(json.decode(json.encode(resp.data)));
-        });
-        heart.beat();
+  void reportState() {
+    dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl",
+        data: {"code": SocketAction.REPORT_STATE, "identity": ctrl.identity});
+  }
+
+  getCtrlInfo(data) {
+    Map<String, dynamic> map = new Map<String, dynamic>();
+    data.split("&").forEach((f) {
+      List<String> arr = f.split("=");
+      if (arr[0] != "workerId") {
+        map.putIfAbsent(arr[0], () => arr.length == 2 ? int.parse(arr[1]) : "");
+      } else {
+        map.putIfAbsent(arr[0], () => arr.length == 2 ? arr[1] : "");
       }
     });
+    map["uname"] = ctrl.uname;
+    map["identity"] = ctrl.identity;
+    map["user"] = ctrl.user;
+    setState(() {
+      ctrl = new Controller.fromJson(json.decode(json.encode(map)));
+    });
+    heart.beat();
   }
 
   getVoteInfo() {
@@ -75,11 +92,10 @@ class _ControlPage extends State<Control> {
   }
 
   control(String code) {
-    if(code.contains("TASK")||code.contains("AUTO_VOTE_INDEX_NAME_START")) {
+    if (code.contains("TASK") || code.contains("AUTO_VOTE_INDEX_NAME_START")) {
       showDialog(
         context: context,
-        builder: (_) =>
-            PlatformAlertDialog(
+        builder: (_) => PlatformAlertDialog(
               title: Text('提示'),
               content: Text('确定要执行？\n${code}'),
               actions: <Widget>[
@@ -100,7 +116,7 @@ class _ControlPage extends State<Control> {
               ],
             ),
       );
-    }else {
+    } else {
       dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl",
           data: {"code": code, "identity": ctrl.identity});
     }
@@ -419,7 +435,9 @@ class _ControlPage extends State<Control> {
                       width: 90,
                       margin: const EdgeInsets.all(10),
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            control(SocketAction.TASK_PC_RAR);
+                          },
                           color: Colors.lime,
                           icon: Icon(Icons.insert_drive_file),
                           label: new Text("RAR"))),
@@ -427,7 +445,9 @@ class _ControlPage extends State<Control> {
                       width: 90,
                       margin: const EdgeInsets.all(10),
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            control(SocketAction.TASK_PC_EPT);
+                          },
                           color: Colors.pink,
                           icon: Icon(Icons.clear_all),
                           label: new Text("EPT"))),
@@ -435,7 +455,9 @@ class _ControlPage extends State<Control> {
                       width: 90,
                       margin: const EdgeInsets.all(10),
                       child: FlatButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            control(SocketAction.TASK_PC_UPGRADE);
+                          },
                           color: Colors.red,
                           icon: Icon(Icons.update),
                           label: new Text("更新"))),
@@ -553,22 +575,6 @@ class _ControlPage extends State<Control> {
                   )
                 ],
               ),
-              StreamBuilder(
-                  stream: channel.stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      var data = snapshot.data.toString();
-                      if (data == SocketAction.REFRESH_STATE) {
-                        new Future.delayed(const Duration(seconds: 1), () {
-                          getCtrlInfo();
-                        });
-                      }
-                    }
-                    return Container(
-                      width: 0,
-                      height: 0,
-                    );
-                  })
             ],
           )
         ],
@@ -579,7 +585,6 @@ class _ControlPage extends State<Control> {
         backgroundColor: Colors.grey,
         onPressed: () {
           getVoteInfo();
-          getCtrlInfo();
         },
       ),
     );

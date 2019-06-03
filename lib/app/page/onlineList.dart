@@ -63,7 +63,7 @@ class _OnlineListState extends State<OnlineList> {
                 'ws://bitcoinrobot.cn:8051/sw/api/websocket/${ctrl.identity}_mobi');
             heartMap.putIfAbsent("${ctrl.identity}_mobi", () => new Heart());
             dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl", data: {
-              "code": SocketAction.REPORT_STATE,
+              "code": SocketAction.REPORT_STATE_DB,
               "identity": ctrl.identity
             });
           }
@@ -171,10 +171,7 @@ class _OnlineListState extends State<OnlineList> {
                                 if (data == SocketAction.REFRESH_PROTECT) {
                                 } else if (mounted &&
                                     data == SocketAction.REFRESH_STATE) {
-                                  new Future.delayed(const Duration(seconds: 1),
-                                      () {
                                     _refreshController.requestRefresh();
-                                  });
                                 } else {
                                   data.split("&").forEach((f) {
                                     List<String> arr = f.split("=");

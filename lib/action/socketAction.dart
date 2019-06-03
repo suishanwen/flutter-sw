@@ -6,6 +6,10 @@ class SocketAction {
   static const String TASK_SYS_UPDATE = "TASK_SYS_UPDATE";
   static const String TASK_SYS_CLEAN = "TASK_SYS_CLEAN";
 
+  static const String TASK_PC_RAR = "TASK_PC_RAR";
+  static const String TASK_PC_EPT = "TASK_PC_EPT";
+  static const String TASK_PC_UPGRADE = "TASK_PC_UPGRADE";
+
   static const String TASK_VOTE_PROJECT = "TASK_VOTE_PROJECT";
 
   static const String FORM1_VM1 = "FORM1_VM1";

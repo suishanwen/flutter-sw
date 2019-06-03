@@ -23,13 +23,8 @@ class _AnimationApp extends State<DlProgress>
   initState() {
     super.initState();
     /*创建动画控制类对象*/
-    if (widget.type == SocketAction.REPORT_STATE) {
-      controller = new AnimationController(
-          duration: const Duration(milliseconds: 5000), vsync: this);
-    } else {
-      controller = new AnimationController(
-          duration: const Duration(milliseconds: 3000), vsync: this);
-    }
+    controller = new AnimationController(
+        duration: const Duration(milliseconds: 3000), vsync: this);
 
     /*创建补间对象*/
     tween = new Tween(begin: 0.0, end: 1.0).animate(controller) //返回Animation对象
