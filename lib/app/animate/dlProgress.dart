@@ -1,7 +1,6 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:sw/action/socketAction.dart';
 
 Dio dio = new Dio();
 
@@ -54,9 +53,11 @@ class _AnimationApp extends State<DlProgress>
   }
 
   startAnimtaion() {
-    setState(() {
-      controller.forward(from: 0.0);
-    });
+    if (mounted) {
+      setState(() {
+        controller.forward(from: 0.0);
+      });
+    }
   }
 
   dispose() {

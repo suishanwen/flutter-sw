@@ -56,7 +56,7 @@ class _ControlPage extends State<Control> {
     }
   }
 
-  void _onRefresh(){
+  void _onRefresh() {
     getVoteInfo((status) {
       if (status) {
         _refreshController.refreshCompleted();
@@ -72,28 +72,31 @@ class _ControlPage extends State<Control> {
   }
 
   getCtrlInfo(data) {
-    Map<String, dynamic> map = new Map<String, dynamic>();
-    data.split("&").forEach((f) {
-      List<String> arr = f.split("=");
-      if (arr[0] != "workerId") {
-        map.putIfAbsent(arr[0], () => arr.length == 2 ? int.parse(arr[1]) : "");
-      } else {
-        map.putIfAbsent(arr[0], () => arr.length == 2 ? arr[1] : "");
-      }
-    });
-    map["uname"] = ctrl.uname;
-    map["identity"] = ctrl.identity;
-    map["user"] = ctrl.user;
-    setState(() {
-      ctrl = new Controller.fromJson(json.decode(json.encode(map)));
-    });
-    heart.beat();
+    if (mounted) {
+      Map<String, dynamic> map = new Map<String, dynamic>();
+      data.split("&").forEach((f) {
+        List<String> arr = f.split("=");
+        if (arr[0] != "workerId") {
+          map.putIfAbsent(
+              arr[0], () => arr.length == 2 ? int.parse(arr[1]) : "");
+        } else {
+          map.putIfAbsent(arr[0], () => arr.length == 2 ? arr[1] : "");
+        }
+      });
+      map["uname"] = ctrl.uname;
+      map["identity"] = ctrl.identity;
+      map["user"] = ctrl.user;
+      setState(() {
+        ctrl = new Controller.fromJson(json.decode(json.encode(map)));
+      });
+      heart.beat();
+    }
   }
 
-  getVoteInfo(Function callback) async{
+  getVoteInfo(Function callback) async {
     try {
-      var response = await dio.get(
-          "https://tl.bitcoinrobot.cn/voteInfo/?idAdsl=1");
+      var response =
+          await dio.get("https://tl.bitcoinrobot.cn/voteInfo/?idAdsl=1");
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.data);
         projectList = new List<VoteProject>();
@@ -108,7 +111,7 @@ class _ControlPage extends State<Control> {
       } else {
         callback(false);
       }
-    }catch(e){
+    } catch (e) {
       callback(false);
       print("getVoteInfo Error:" + e.toString());
     }
@@ -334,7 +337,7 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.TASK_SYS_SHUTDOWN);
                             },
-                            color: Colors.cyanAccent,
+                            color: Colors.white,
                             icon: Icon(Icons.shutter_speed),
                             label: new Text("关机"))),
                     Container(
@@ -344,7 +347,7 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.TASK_SYS_RESTART);
                             },
-                            color: Colors.redAccent,
+                            color: Colors.white,
                             icon: Icon(Icons.restore),
                             label: new Text("重启"))),
                   ],
@@ -358,7 +361,7 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.TASK_SYS_NET_TEST);
                             },
-                            color: Colors.black38,
+                            color: Colors.white,
                             icon: Icon(Icons.network_check),
                             label: new Text("测网"))),
                     Container(
@@ -368,7 +371,7 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.TASK_SYS_CLEAN);
                             },
-                            color: Colors.green,
+                            color: Colors.white,
                             icon: Icon(Icons.clear),
                             label: new Text("清理"))),
                     Container(
@@ -378,7 +381,7 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.TASK_SYS_UPDATE);
                             },
-                            color: Colors.deepOrange,
+                            color: Colors.white,
                             icon: Icon(Icons.arrow_upward),
                             label: new Text("升级"))),
                   ],
@@ -400,7 +403,7 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.TASK_PC_RAR);
                             },
-                            color: Colors.lime,
+                            color: Colors.white,
                             icon: Icon(Icons.insert_drive_file),
                             label: new Text("RAR"))),
                     Container(
@@ -410,7 +413,7 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.TASK_PC_EPT);
                             },
-                            color: Colors.pink,
+                            color: Colors.white,
                             icon: Icon(Icons.clear_all),
                             label: new Text("EPT"))),
                     Container(
@@ -420,7 +423,7 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.TASK_PC_UPGRADE);
                             },
-                            color: Colors.red,
+                            color: Colors.white,
                             icon: Icon(Icons.update),
                             label: new Text("更新"))),
                   ],
@@ -434,8 +437,10 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.AUTO_VOTE_SET1);
                             },
-                            color: Colors.lime,
-                            icon: Icon(Icons.insert_drive_file),
+                            color: Colors.white,
+                            icon: Icon(ctrl.autoVote == 1
+                                ? Icons.invert_colors_off
+                                : Icons.invert_colors),
                             label: new Text(
                                 "${ctrl.autoVote == 1 ? "关闭" : "开启"}自动"))),
                     Container(
@@ -445,8 +450,10 @@ class _ControlPage extends State<Control> {
                             onPressed: () {
                               control(SocketAction.AUTO_VOTE_SET2);
                             },
-                            color: Colors.pink,
-                            icon: Icon(Icons.clear_all),
+                            color: Colors.white,
+                            icon: Icon(ctrl.overAuto == 1
+                                ? Icons.leak_remove
+                                : Icons.leak_add),
                             label: new Text(
                                 "${ctrl.overAuto == 1 ? "关闭" : "开启"}到票自动"))),
                   ],
@@ -457,7 +464,7 @@ class _ControlPage extends State<Control> {
                         width: 90,
                         child: FlatButton.icon(
                             onPressed: () {},
-                            color: Colors.redAccent,
+                            color: Colors.white,
                             icon: Icon(Icons.add_to_queue),
                             label: new Text("投票"))),
                     Container(
@@ -509,7 +516,7 @@ class _ControlPage extends State<Control> {
                                 replugSort = "";
                               });
                             },
-                            color: Colors.amber,
+                            color: Colors.white,
                             icon: Icon(Icons.send),
                             label: new Text("重置"))),
                   ],

@@ -35,5 +35,4 @@ class SocketAction {
   static const String REPORT_STATE_DB = "REPORT_STATE_DB";
 
   static const String REFRESH_STATE = "REFRESH_STATE";
-  static const String REFRESH_PROTECT = "REFRESH_PROTECT";
 }

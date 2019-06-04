@@ -26,7 +26,9 @@ class _AnimationApp extends State<Heart> with SingleTickerProviderStateMixin {
     /*创建补间对象*/
     tween = new Tween(begin: 0.0, end: 1.0).animate(controller) //返回Animation对象
       ..addListener(() {
-        setState(() {});
+        if(mounted){
+          setState(() {});
+        }
       });
 
 //    controller.forward(); //执行动画
@@ -45,9 +47,11 @@ class _AnimationApp extends State<Heart> with SingleTickerProviderStateMixin {
   }
 
   startAnimtaion() {
-    setState(() {
-      controller.forward(from: 0.0);
-    });
+    if (mounted){
+      setState(() {
+        controller.forward(from: 0.0);
+      });
+    }
   }
 
   heartBeat() {

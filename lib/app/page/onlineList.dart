@@ -35,19 +35,20 @@ class _OnlineListState extends State<OnlineList> {
 
   Map<String, Heart> heartMap = new Map<String, Heart>();
 
-  bool socketReconnect;
-
   @override
   initState() {
     super.initState();
     userCode = widget.userCode;
     ctrlList = new List<Controller>();
-    socketReconnect = true;
     // initialRefresh可以在组件初始化时执行一次刷新操作
-    _refreshController = RefreshController(initialRefresh: true);
+    _refreshController = RefreshController(initialRefresh: false);
+    reconnect();
   }
 
-  void queryController(Function callback) async {
+  void queryController(bool socketConnect, Function callback) async {
+    if (!mounted) {
+      return;
+    }
     ctrlList = new List<Controller>();
     try {
       var response = await dio
@@ -58,14 +59,10 @@ class _OnlineListState extends State<OnlineList> {
           Controller ctrl =
               new Controller.fromJson(json.decode(json.encode(f)));
           ctrlList.add(ctrl);
-          if (socketReconnect) {
+          heartMap.putIfAbsent("${ctrl.identity}_mobi", () => new Heart());
+          if (socketConnect) {
             channelMap["${ctrl.identity}_mobi"] = IOWebSocketChannel.connect(
                 'ws://bitcoinrobot.cn:8051/sw/api/websocket/${ctrl.identity}_mobi');
-            heartMap.putIfAbsent("${ctrl.identity}_mobi", () => new Heart());
-            dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl", data: {
-              "code": SocketAction.REPORT_STATE_DB,
-              "identity": ctrl.identity
-            });
           }
         });
       }
@@ -73,17 +70,29 @@ class _OnlineListState extends State<OnlineList> {
         ctrlList = ctrlList;
         channelMap = channelMap;
         heartMap = heartMap;
-        socketReconnect = false;
       });
-      callback(true);
+      callback(true, ctrlList);
     } catch (e) {
-      callback(false);
+      callback(false, ctrlList);
       print("queryList Error:" + e.toString());
     }
   }
 
+  void reconnect() {
+    queryController(true, (status, List<Controller> ctrlList) {
+      if (status) {
+        ctrlList.forEach((ctrl) {
+          dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl", data: {
+            "code": SocketAction.REPORT_STATE_DB,
+            "identity": ctrl.identity
+          });
+        });
+      }
+    });
+  }
+
   void _onRefresh() {
-    queryController((status) {
+    queryController(false, (status, ctrlList) {
       if (status) {
         _refreshController.refreshCompleted();
       } else {
@@ -168,10 +177,12 @@ class _OnlineListState extends State<OnlineList> {
                                   new Map<String, String>();
                               if (snapshot.hasData) {
                                 var data = snapshot.data.toString();
-                                if (data == SocketAction.REFRESH_PROTECT) {
-                                } else if (mounted &&
+                                if (mounted &&
                                     data == SocketAction.REFRESH_STATE) {
+                                  new Future.delayed(const Duration(seconds: 0),
+                                      () {
                                     _refreshController.requestRefresh();
+                                  });
                                 } else {
                                   data.split("&").forEach((f) {
                                     List<String> arr = f.split("=");
@@ -181,6 +192,14 @@ class _OnlineListState extends State<OnlineList> {
                                 }
                                 heart.beat();
                               }
+                              map["arrDrop"] =
+                                  map["arrDrop"] != null ? map["arrDrop"] : "";
+                              map["arrActive"] = map["arrActive"] != null
+                                  ? map["arrActive"]
+                                  : "";
+                              map["taskInfos"] = map["taskInfos"] != null
+                                  ? map["taskInfos"]
+                                  : "无";
                               return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   //card里面的子控件
@@ -230,10 +249,10 @@ class _OnlineListState extends State<OnlineList> {
                                         builder: (BuildContext context) {
                                   return new Control(ctrl);
                                 })).then((val) {
-                                  setState(() {
-                                    socketReconnect = true;
+                                  new Future.delayed(const Duration(seconds: 1),
+                                      () {
+                                    reconnect();
                                   });
-                                  _refreshController.requestRefresh();
                                 });
                               },
                             ),
