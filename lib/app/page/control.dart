@@ -59,6 +59,11 @@ class _ControlPage extends State<Control> {
   void _onRefresh() {
     getVoteInfo((status) {
       if (status) {
+        if(mounted){
+          setState(() {
+            projectList = projectList;
+          });
+        }
         _refreshController.refreshCompleted();
       } else {
         _refreshController.refreshFailed();
@@ -103,9 +108,6 @@ class _ControlPage extends State<Control> {
         data.forEach((e) {
           VoteProject voteProject = new VoteProject.fromJson(e);
           projectList.add(voteProject);
-        });
-        setState(() {
-          projectList = projectList;
         });
         callback(true);
       } else {

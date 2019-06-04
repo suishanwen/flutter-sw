@@ -42,13 +42,19 @@ class _OnlineListState extends State<OnlineList> {
     ctrlList = new List<Controller>();
     // initialRefresh可以在组件初始化时执行一次刷新操作
     _refreshController = RefreshController(initialRefresh: false);
-    reconnect();
+    queryController((status, ctrlList) {
+      socketConnect((channelMap) {
+        if (mounted) {
+          setState(() {
+            ctrlList = ctrlList;
+            channelMap = channelMap;
+          });
+        }
+      });
+    });
   }
 
-  void queryController(bool socketConnect, Function callback) async {
-    if (!mounted) {
-      return;
-    }
+  void queryController(Function callback) async {
     ctrlList = new List<Controller>();
     try {
       var response = await dio
@@ -60,17 +66,8 @@ class _OnlineListState extends State<OnlineList> {
               new Controller.fromJson(json.decode(json.encode(f)));
           ctrlList.add(ctrl);
           heartMap.putIfAbsent("${ctrl.identity}_mobi", () => new Heart());
-          if (socketConnect) {
-            channelMap["${ctrl.identity}_mobi"] = IOWebSocketChannel.connect(
-                'ws://bitcoinrobot.cn:8051/sw/api/websocket/${ctrl.identity}_mobi');
-          }
         });
       }
-      setState(() {
-        ctrlList = ctrlList;
-        channelMap = channelMap;
-        heartMap = heartMap;
-      });
       callback(true, ctrlList);
     } catch (e) {
       callback(false, ctrlList);
@@ -78,27 +75,35 @@ class _OnlineListState extends State<OnlineList> {
     }
   }
 
-  void reconnect() {
-    queryController(true, (status, List<Controller> ctrlList) {
-      if (status) {
-        ctrlList.forEach((ctrl) {
-          dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl", data: {
-            "code": SocketAction.REPORT_STATE_DB,
-            "identity": ctrl.identity
-          });
-        });
-      }
+  void socketConnect(callback) {
+    ctrlList.forEach((ctrl) {
+      channelMap["${ctrl.identity}_mobi"] = IOWebSocketChannel.connect(
+          'ws://bitcoinrobot.cn:8051/sw/api/websocket/${ctrl.identity}_mobi');
     });
+    new Future.delayed(const Duration(seconds: 1), () {
+      ctrlList.forEach((ctrl) {
+        dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl", data: {
+          "code": SocketAction.REPORT_STATE_DB,
+          "identity": ctrl.identity
+        });
+      });
+    });
+    callback(channelMap);
   }
 
   void _onRefresh() {
-    queryController(false, (status, ctrlList) {
-      if (status) {
-        _refreshController.refreshCompleted();
-      } else {
-        _refreshController.refreshFailed();
-      }
-    });
+    if (mounted) {
+      queryController((status, ctrlList) {
+        if (status) {
+          setState(() {
+            ctrlList = ctrlList;
+          });
+          _refreshController.refreshCompleted();
+        } else {
+          _refreshController.refreshFailed();
+        }
+      });
+    }
   }
 
   @override
@@ -251,7 +256,13 @@ class _OnlineListState extends State<OnlineList> {
                                 })).then((val) {
                                   new Future.delayed(const Duration(seconds: 1),
                                       () {
-                                    reconnect();
+                                    socketConnect((channelMap) {
+                                      if (mounted) {
+                                        setState(() {
+                                          channelMap = channelMap;
+                                        });
+                                      }
+                                    });
                                   });
                                 });
                               },
