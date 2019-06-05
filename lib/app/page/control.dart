@@ -43,8 +43,57 @@ class _ControlPage extends State<Control> {
         'ws://bitcoinrobot.cn:8051/sw/api/websocket/${ctrl.identity}_mobi');
     reportState();
     channel.stream.listen((data) {
-      if (data.contains("startNum")) {
+      if (data.contains("startNum=")) {
         getCtrlInfo(data);
+      } else if (data.contains("votes=")) {
+        List<String> voteList = data.split("=")[1].split(",");
+        if (mounted && voteList.length > 0) {
+          new Future.delayed(const Duration(seconds: 1), () {
+            showDialog<Null>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return new AlertDialog(
+                  title: new Text('标题'),
+                  content: Container(
+                    width: 500,
+                    height: 800,
+                    child: ListView.builder(
+                        itemCount: voteList.length,
+                        itemBuilder: (BuildContext content, int index) {
+                          String project = voteList[index];
+                          return Card(
+                              clipBehavior: Clip.antiAlias,
+                              color: Colors.green,
+                              margin: EdgeInsets.all(10.0),
+                              child: GestureDetector(
+                                  child: Text(
+                                    project,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 22),
+                                  ),
+                                  onLongPress: () {
+                                    if (project != "") {
+                                      Navigator.of(context).pop();
+                                      control(
+                                          "${SocketAction.TASK_VOTE_PROJECT}:${project}");
+                                    }
+                                  }));
+                        }),
+                  ),
+                  actions: <Widget>[
+                    new FlatButton(
+                      child: new Text('关闭'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          });
+        }
       }
     });
     _refreshController = RefreshController(initialRefresh: true);
@@ -77,6 +126,13 @@ class _ControlPage extends State<Control> {
   void reportState() {
     dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl",
         data: {"code": SocketAction.REPORT_STATE, "identity": ctrl.identity});
+  }
+
+  void vote(projectName) {
+    dio.post("https://bitcoinrobot.cn/api/mq/send/ctrl", data: {
+      "code": "${SocketAction.TASK_VOTE_PROJECT}:${projectName}",
+      "identity": ctrl.identity
+    });
   }
 
   getCtrlInfo(data) {
@@ -512,7 +568,9 @@ class _ControlPage extends State<Control> {
                     Container(
                         width: 90,
                         child: FlatButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              control(SocketAction.REPORT_STATE_VOTE);
+                            },
                             color: Colors.white,
                             icon: Icon(Icons.add_to_queue),
                             label: new Text("投票"))),
@@ -670,7 +728,7 @@ class _ControlPage extends State<Control> {
                                       "${SocketAction.DROP_PROJECT}:${projectName}|${dropped}")),
                             ],
                           );
-                        })))
+                        }))),
           ],
         ));
   }

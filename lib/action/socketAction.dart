@@ -35,6 +35,7 @@ class SocketAction {
 
   static const String REPORT_STATE = "REPORT_STATE";
   static const String REPORT_STATE_LESS = "REPORT_STATE_LESS";
+  static const String REPORT_STATE_VOTE = "REPORT_STATE_VOTE";
   static const String REPORT_STATE_DB = "REPORT_STATE_DB";
 
   static const String REFRESH_STATE = "REFRESH_STATE";

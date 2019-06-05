@@ -188,14 +188,15 @@ class _OnlineListState extends State<OnlineList> {
                                       () {
                                     _refreshController.requestRefresh();
                                   });
-                                } else {
+                                } else if (mounted &&
+                                    data.contains("arrDrop")) {
                                   data.split("&").forEach((f) {
                                     List<String> arr = f.split("=");
                                     map.putIfAbsent(arr[0],
                                         () => arr.length == 2 ? arr[1] : "");
                                   });
+                                  heart.beat();
                                 }
-                                heart.beat();
                               }
                               map["arrDrop"] =
                                   map["arrDrop"] != null ? map["arrDrop"] : "";
@@ -254,7 +255,7 @@ class _OnlineListState extends State<OnlineList> {
                                         builder: (BuildContext context) {
                                   return new Control(ctrl);
                                 })).then((val) {
-                                  new Future.delayed(const Duration(seconds: 1),
+                                  new Future.delayed(const Duration(seconds: 2),
                                       () {
                                     socketConnect((channelMap) {
                                       if (mounted) {
