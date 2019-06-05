@@ -54,7 +54,7 @@ class _ControlPage extends State<Control> {
               barrierDismissible: false,
               builder: (BuildContext context) {
                 return new AlertDialog(
-                  title: new Text('标题'),
+                  title: new Text('投票'),
                   content: Container(
                     width: 500,
                     height: 800,
@@ -179,10 +179,10 @@ class _ControlPage extends State<Control> {
         });
         projectList.sort((v1, v2) {
           double d1 =
-              isToppedProject(v1.projectName) ? 9999.0 : double.parse(v1.price);
+              isToppedProject(v1.projectName) ? 99999.0 : double.parse(v1.price);
           double d2 =
-              isToppedProject(v2.projectName) ? 9999.0 : double.parse(v2.price);
-          double diff = (d2 - d1) * 100;
+              isToppedProject(v2.projectName) ? 99999.0 : double.parse(v2.price);
+          double diff = (d2 - d1) * 1000;
           return diff.toInt();
         });
         callback(true);
