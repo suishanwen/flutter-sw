@@ -631,7 +631,7 @@ class _ControlPage extends State<Control> {
               ],
             ),
             Container(
-                margin: EdgeInsets.fromLTRB(0, 450, 0, 0),
+                margin: EdgeInsets.fromLTRB(0, 435, 0, 0),
                 child: SmartRefresher(
                     enablePullDown: true,
                     enablePullUp: false,
