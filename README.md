@@ -16,10 +16,10 @@ IOS>  flutter build ios --release
 
 安装:Usb连接电脑，通过 cydia Impactor，拖入ipa包到手机输入icloud账号完成安装
 
-续签L越狱后通过ReProvision自动续签
+续签:越狱后通过ReProvision自动续签
 
 
-ANDROID>  flutter build apk
+Android>  flutter build apk
 
 
 
