@@ -178,10 +178,12 @@ class _ControlPage extends State<Control> {
           projectList.add(voteProject);
         });
         projectList.sort((v1, v2) {
-          double d1 =
-              isToppedProject(v1.projectName) ? 99999.0 : double.parse(v1.price);
-          double d2 =
-              isToppedProject(v2.projectName) ? 99999.0 : double.parse(v2.price);
+          double d1 = isToppedProject(v1.projectName)
+              ? 99999.0
+              : double.parse(v1.price);
+          double d2 = isToppedProject(v2.projectName)
+              ? 99999.0
+              : double.parse(v2.price);
           double diff = (d2 - d1) * 1000;
           return diff.toInt();
         });
@@ -427,7 +429,7 @@ class _ControlPage extends State<Control> {
                         )),
                     Container(
                         width: 90,
-                        margin: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.fromLTRB(10, 2.5, 10, 2.5),
                         child: FlatButton.icon(
                             onPressed: () {
                               control(SocketAction.TASK_SYS_WAIT_ORDER);
@@ -437,7 +439,7 @@ class _ControlPage extends State<Control> {
                             label: new Text("待命"))),
                     Container(
                         width: 90,
-                        margin: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.fromLTRB(10, 2.5, 10, 2.5),
                         child: FlatButton.icon(
                             onPressed: () {
                               control(SocketAction.TASK_SYS_SHUTDOWN);
@@ -447,7 +449,7 @@ class _ControlPage extends State<Control> {
                             label: new Text("关机"))),
                     Container(
                         width: 90,
-                        margin: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.fromLTRB(10, 2.5, 10, 2.5),
                         child: FlatButton.icon(
                             onPressed: () {
                               control(SocketAction.TASK_SYS_RESTART);
@@ -471,7 +473,7 @@ class _ControlPage extends State<Control> {
                             label: new Text("测网"))),
                     Container(
                         width: 90,
-                        margin: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.fromLTRB(10, 2.5, 10, 2.5),
                         child: FlatButton.icon(
                             onPressed: () {
                               control(SocketAction.TASK_SYS_CLEAN);
@@ -481,7 +483,7 @@ class _ControlPage extends State<Control> {
                             label: new Text("清理"))),
                     Container(
                         width: 90,
-                        margin: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.fromLTRB(10, 2.5, 10, 2.5),
                         child: FlatButton.icon(
                             onPressed: () {
                               control(SocketAction.TASK_SYS_UPDATE);
@@ -503,7 +505,7 @@ class _ControlPage extends State<Control> {
                         )),
                     Container(
                         width: 90,
-                        margin: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.fromLTRB(10, 2.5, 10, 2.5),
                         child: FlatButton.icon(
                             onPressed: () {
                               control(SocketAction.TASK_PC_RAR);
@@ -513,7 +515,7 @@ class _ControlPage extends State<Control> {
                             label: new Text("RAR"))),
                     Container(
                         width: 90,
-                        margin: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.fromLTRB(10, 2.5, 10, 2.5),
                         child: FlatButton.icon(
                             onPressed: () {
                               control(SocketAction.TASK_PC_EPT);
@@ -523,7 +525,7 @@ class _ControlPage extends State<Control> {
                             label: new Text("EPT"))),
                     Container(
                         width: 90,
-                        margin: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.fromLTRB(10, 2.5, 10, 2.5),
                         child: FlatButton.icon(
                             onPressed: () {
                               control(SocketAction.TASK_PC_UPGRADE);
@@ -631,7 +633,7 @@ class _ControlPage extends State<Control> {
               ],
             ),
             Container(
-                margin: EdgeInsets.fromLTRB(0, 435, 0, 0),
+                margin: EdgeInsets.fromLTRB(0, 400, 0, 0),
                 child: SmartRefresher(
                     enablePullDown: true,
                     enablePullUp: false,
