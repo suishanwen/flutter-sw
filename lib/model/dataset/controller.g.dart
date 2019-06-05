@@ -19,7 +19,10 @@ Controller _$ControllerFromJson(Map<String, dynamic> json) {
     ..autoVote = json['autoVote'] as int
     ..overAuto = json['overAuto'] as int
     ..user = json['user'] as String
-    ..sort = json['sort'] as int;
+    ..sort = json['sort'] as int
+    ..dropped = json['dropped'] as String
+    ..droppedTemp = json['droppedTemp'] as String
+    ..topped = json['topped'] as String;
 }
 
 Map<String, dynamic> _$ControllerToJson(Controller instance) =>
@@ -35,5 +38,8 @@ Map<String, dynamic> _$ControllerToJson(Controller instance) =>
       'autoVote': instance.autoVote,
       'overAuto': instance.overAuto,
       'user': instance.user,
-      'sort': instance.sort
+      'sort': instance.sort,
+      'dropped': instance.dropped,
+      'droppedTemp': instance.droppedTemp,
+      'topped': instance.topped
     };

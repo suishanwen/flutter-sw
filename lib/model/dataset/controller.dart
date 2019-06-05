@@ -16,6 +16,9 @@ class Controller {
   int overAuto;
   String user;
   int sort;
+  String dropped;
+  String droppedTemp;
+  String topped;
 
   Controller();
 

@@ -30,6 +30,9 @@ class SocketAction {
   static const String AUTO_VOTE_INDEX_SELECT = "AUTO_VOTE_INDEX_SELECT";
   static const String AUTO_VOTE_INDEX_NAME_START = "AUTO_VOTE_INDEX_NAME_START";
 
+  static const String DROP_PROJECT = "DROP_PROJECT";
+  static const String TOP_PROJECT = "TOP_PROJECT";
+
   static const String REPORT_STATE = "REPORT_STATE";
   static const String REPORT_STATE_LESS = "REPORT_STATE_LESS";
   static const String REPORT_STATE_DB = "REPORT_STATE_DB";

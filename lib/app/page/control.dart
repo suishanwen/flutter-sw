@@ -13,6 +13,7 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 Dio dio = new Dio();
 
@@ -32,6 +33,7 @@ class _ControlPage extends State<Control> {
   WebSocketChannel channel;
   String replugSort = "";
   RefreshController _refreshController;
+  int beatCount = 0;
 
   @override
   void initState() {
@@ -59,8 +61,9 @@ class _ControlPage extends State<Control> {
   void _onRefresh() {
     getVoteInfo((status) {
       if (status) {
-        if(mounted){
+        if (mounted) {
           setState(() {
+            beatCount = 0;
             projectList = projectList;
           });
         }
@@ -81,20 +84,29 @@ class _ControlPage extends State<Control> {
       Map<String, dynamic> map = new Map<String, dynamic>();
       data.split("&").forEach((f) {
         List<String> arr = f.split("=");
-        if (arr[0] != "workerId") {
-          map.putIfAbsent(
-              arr[0], () => arr.length == 2 ? int.parse(arr[1]) : "");
+        String name = arr[0];
+        String val = arr.length == 2 ? arr[1] : "";
+        if (name != "workerId" &&
+            name != "dropped" &&
+            name != "droppedTemp" &&
+            name != "topped") {
+          map.putIfAbsent(name, () => val != "" ? int.parse(val) : "");
         } else {
-          map.putIfAbsent(arr[0], () => arr.length == 2 ? arr[1] : "");
+          map.putIfAbsent(name, () => val);
         }
       });
       map["uname"] = ctrl.uname;
       map["identity"] = ctrl.identity;
       map["user"] = ctrl.user;
+      beatCount++;
       setState(() {
         ctrl = new Controller.fromJson(json.decode(json.encode(map)));
+        beatCount = beatCount;
       });
       heart.beat();
+      if (beatCount == 20) {
+        _refreshController.requestRefresh();
+      }
     }
   }
 
@@ -109,6 +121,14 @@ class _ControlPage extends State<Control> {
           VoteProject voteProject = new VoteProject.fromJson(e);
           projectList.add(voteProject);
         });
+        projectList.sort((v1, v2) {
+          double d1 =
+              isToppedProject(v1.projectName) ? 9999.0 : double.parse(v1.price);
+          double d2 =
+              isToppedProject(v2.projectName) ? 9999.0 : double.parse(v2.price);
+          double diff = (d2 - d1) * 100;
+          return diff.toInt();
+        });
         callback(true);
       } else {
         callback(false);
@@ -117,6 +137,33 @@ class _ControlPage extends State<Control> {
       callback(false);
       print("getVoteInfo Error:" + e.toString());
     }
+  }
+
+  bool isDroppedProject(String projectName) {
+    bool match = false;
+    ctrl.dropped.split("|").forEach((name) {
+      if (name != "" && projectName.contains(name)) {
+        match = true;
+      }
+    });
+    if (!match) {
+      ctrl.droppedTemp.split("|").forEach((name) {
+        if (name != "" && projectName.contains(name)) {
+          match = true;
+        }
+      });
+    }
+    return match;
+  }
+
+  bool isToppedProject(String projectName) {
+    bool match = false;
+    ctrl.topped.split("|").forEach((name) {
+      if (name != "" && projectName.contains(name)) {
+        match = true;
+      }
+    });
+    return match;
   }
 
   control(String code) {
@@ -539,62 +586,89 @@ class _ControlPage extends State<Control> {
                         itemCount: projectList.length,
                         itemBuilder: (BuildContext content, int index) {
                           VoteProject voteProject = projectList[index];
-                          return Card(
-                            clipBehavior: Clip.antiAlias,
-                            color: Colors.green,
-                            elevation: 10.0,
-                            margin: EdgeInsets.all(2.0),
-                            semanticContainer: true,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5.0)),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                new Align(
-                                    alignment: new FractionalOffset(1.0, 0.0),
-                                    child: Container(
-                                        padding:
-                                            EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                        child: Transform.rotate(
-                                          angle: 1.0,
-                                          child: Text(
-                                            '${voteProject.idType}',
-                                            style: TextStyle(
-                                                color: Colors.lightGreenAccent),
-                                          ),
-                                        ))),
-                                ListTile(
-                                    leading: Column(
-                                        //card里面的子控件
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Container(
-                                            child: Text(voteProject.price,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                )),
-                                            margin: EdgeInsets.all(3.0),
-                                          ),
-                                        ]),
-                                    title: GestureDetector(
-                                      child: Text(
-                                        '${voteProject.projectName}(${voteProject.hot})',
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 25),
+                          String projectName = voteProject.projectName;
+                          bool dropped = isDroppedProject(projectName);
+                          bool topped = isToppedProject(projectName);
+                          return Slidable(
+                            actionPane: SlidableDrawerActionPane(),
+                            actionExtentRatio: 0.25,
+                            child: Card(
+                              clipBehavior: Clip.antiAlias,
+                              color: dropped ? Colors.black : Colors.green,
+                              elevation: 10.0,
+                              margin: EdgeInsets.all(2.0),
+                              semanticContainer: true,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0)),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new Align(
+                                      alignment: new FractionalOffset(1.0, 0.0),
+                                      child: Container(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                          child: Transform.rotate(
+                                            angle: 1.0,
+                                            child: Text(
+                                              '${voteProject.idType}',
+                                              style: TextStyle(
+                                                  color:
+                                                      Colors.lightGreenAccent),
+                                            ),
+                                          ))),
+                                  ListTile(
+                                      leading: Column(
+                                          //card里面的子控件
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Container(
+                                              child: Text(voteProject.price,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                  )),
+                                              margin: EdgeInsets.all(3.0),
+                                            ),
+                                          ]),
+                                      title: GestureDetector(
+                                        child: Text(
+                                          '${voteProject.projectName}(${voteProject.hot})',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 22),
+                                        ),
+                                        onTap: () {
+                                          _launchURL(
+                                              voteProject.backgroundAddress);
+                                        },
+                                        onLongPress: () {
+                                          control(
+                                              "${SocketAction.AUTO_VOTE_INDEX_NAME_START}:${voteProject.projectName}");
+                                        },
                                       ),
-                                      onTap: () {
-                                        _launchURL(
-                                            voteProject.backgroundAddress);
-                                      },
-                                      onLongPress: () {
-                                        control(
-                                            "${SocketAction.AUTO_VOTE_INDEX_NAME_START}:${voteProject.projectName}");
-                                      },
-                                    ),
-                                    trailing: Text('${voteProject.remains}'))
-                              ],
+                                      trailing: Text(
+                                        '${voteProject.remains} ${topped ? "顶" : ""}',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                      )),
+                                ],
+                              ),
                             ),
+                            secondaryActions: <Widget>[
+                              IconSlideAction(
+                                  caption: '${topped ? "取消" : ""}置顶',
+                                  color: Colors.blue,
+                                  icon: Icons.vertical_align_top,
+                                  onTap: () => control(
+                                      "${SocketAction.TOP_PROJECT}:${projectName}|${topped}")),
+                              IconSlideAction(
+                                  caption: '${dropped ? "取消" : ""}拉黑',
+                                  color: Colors.red,
+                                  icon: Icons.block,
+                                  onTap: () => control(
+                                      "${SocketAction.DROP_PROJECT}:${projectName}|${dropped}")),
+                            ],
                           );
                         })))
           ],
