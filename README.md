@@ -14,7 +14,7 @@ IOS>  flutter build ios --release
 
 打包:新建Payload文件夹，复制构建生成Runner到Payload文件夹，压缩Payload文件夹并重命名后缀为.ipa
 
-安装:Usb连接电脑，通过 cydia Impactor，拖入ipa包到手机输入icloud账号完成安装
+安装:Usb连接电脑，通过 cydia Impactor，拖入ipa包并输入icloud账号完成安装
 
 续签:越狱后通过ReProvision自动续签
 
