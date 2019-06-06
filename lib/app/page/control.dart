@@ -34,6 +34,7 @@ class _ControlPage extends State<Control> {
   String replugSort = "";
   RefreshController _refreshController;
   int beatCount = 0;
+  double voteViewTop = 400;
 
   @override
   void initState() {
@@ -285,6 +286,16 @@ class _ControlPage extends State<Control> {
         appBar: new AppBar(
           title: new Text(ctrl.uname),
           actions: <Widget>[
+            FlatButton(
+              child: Icon(voteViewTop == 0
+                  ? Icons.border_horizontal
+                  : Icons.zoom_out_map),
+              onPressed: () {
+                setState(() {
+                  voteViewTop = voteViewTop == 0 ? 400 : 0;
+                });
+              },
+            ),
             FlatButton(
               child: heart,
               onPressed: () {},
@@ -633,7 +644,7 @@ class _ControlPage extends State<Control> {
               ],
             ),
             Container(
-                margin: EdgeInsets.fromLTRB(0, 400, 0, 0),
+                margin: EdgeInsets.fromLTRB(0, voteViewTop, 0, 0),
                 child: SmartRefresher(
                     enablePullDown: true,
                     enablePullUp: false,
@@ -656,7 +667,7 @@ class _ControlPage extends State<Control> {
                               clipBehavior: Clip.antiAlias,
                               color: dropped ? Colors.black : Colors.green,
                               elevation: 10.0,
-                              margin: EdgeInsets.all(2.0),
+                              margin: EdgeInsets.all(1.0),
                               semanticContainer: true,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5.0)),
